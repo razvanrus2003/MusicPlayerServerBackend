@@ -3,6 +3,8 @@ package main.items;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import main.MusicPlayer;
+import main.User;
 import main.filters.Filters;
 
 @Getter
@@ -28,4 +30,6 @@ public abstract class Collection extends Item {
         }
         return true;
     }
+
+    public abstract Item next(MusicPlayer musicPlayer, int timestamp);
 }

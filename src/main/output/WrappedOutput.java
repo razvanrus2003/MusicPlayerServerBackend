@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import main.Library;
 import main.commands.Command;
 import main.output.WrappedFormat.WrappedStat;
 
@@ -37,10 +38,9 @@ public class WrappedOutput extends CommandOutput {
         ObjectNode fresults = objectMapper.createObjectNode();
 
         if (results.getPairStats() == null) {
-            node.put("message", "No data to show for user " + user + ".");
+            node.put("message", "No data to show for " + Library.getUser(user).getType().toLowerCase() + " " + user + ".");
             return;
         }
-
 
         for (int j = 1; j < results.getPairStats().size(); j ++) {
             ObjectNode element = objectMapper.createObjectNode();

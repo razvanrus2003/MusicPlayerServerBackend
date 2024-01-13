@@ -34,12 +34,15 @@ public final class User {
     private String status;
     private String type;
     private ArrayList<Event> events;
-    private ArrayList<Merch> merches;
+    private ArrayList<Merch> merches = new ArrayList<>();
     private ArrayList<Post> posts;
     private HashMap<Song, Integer> songHistory = new HashMap<>();
     private HashMap<Episode, Integer> episodeHistory = new HashMap<>();
     private HashMap<String, Integer> artistHistory = new HashMap<>();
-
+    private double merchRevenue = 0;
+    private double songRevenue = 0;
+    private boolean premium = false;
+    private ArrayList<Song> premiumSong = new ArrayList<>();
 
     public User(final UserInput user) {
         this.username = user.getUsername();
@@ -152,7 +155,18 @@ public final class User {
         if (!musicPlayer.getType().equals("albums") && !musicPlayer.getType().equals("songs"))
             musicPlayer.getSrc().incListens();
         song.incListens();
+        if (premium)
+            premiumSong.add((Song)song);
+    }
 
+    public void updateHistoryEpisodes(Item episode) {
+        if (episodeHistory.containsKey(episode)) {
+            episodeHistory.put((Episode) episode, episodeHistory.get(episode) + 1);
+        } else {
+            episodeHistory.put((Episode) episode, 1);
+        }
+
+        episode.incListens();
     }
 
     public void updateHistory(Item song, int listens) {
@@ -162,4 +176,17 @@ public final class User {
         }
     }
 
+    public void cancelPremium() {
+        if (premium) {
+            double revenue = (double) 1000000 / premiumSong.size();
+            for (Song song : premiumSong) {
+                User artist = Library.getUser(song.getArtist());
+                if (artist != null) {
+                    artist.setSongRevenue(artist.getSongRevenue() + revenue);
+                }
+                song.setRevenue(song.getRevenue() + songRevenue);
+            }
+            premium = false;
+        }
+    }
 }

@@ -6,6 +6,7 @@ import fileio.input.LibraryInput;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import main.commands.Command;
 import main.items.*;
 
 import java.util.*;
@@ -82,6 +83,17 @@ public final class Library {
         library = null;
     }
 
+    public String mostProfitableSong(User artist) {
+        return artist.getPlaylists().stream()
+                .map(Item::getContent)
+                .flatMap(List::stream)
+                .map(item -> (Song)item)
+                .filter(song -> song.getRevenue() > 0)
+                .sorted(Comparator.comparing(Song::getRevenue))
+                .map(Item::getName)
+                .reduce("", (a , b) -> b);
+    }
+
     public ObjectNode endProgram(ObjectMapper mapper) {
         ObjectNode output = mapper.createObjectNode();
         output.put("command", "endProgram");
@@ -90,24 +102,36 @@ public final class Library {
 
         ArrayList<User> artists = new ArrayList<>();
 
+        for (User user : Library.getInstance().getUsers()) {
+            user.cancelPremium();
+        }
+
         for (User artist : Library.getInstance().getArtists()) {
             if (artist.getPlaylists().stream()
                     .map(Item::getContent)
                     .flatMap(List::stream)
                     .map(Item::getListens)
-                    .reduce(0, Integer::sum) != 0) {
+                    .reduce(0, Integer::sum) != 0
+                    || artist.getSongRevenue() != 0.0
+                    || artist.getMerchRevenue() != 0.0) {
                 artists.add(artist);
             }
         }
-        artists.sort(Comparator.comparing(User::getUsername));
+        Comparator<User> comparator = Comparator.comparing(artist -> artist.getMerchRevenue() + artist.getSongRevenue());
+        comparator = comparator.reversed().thenComparing(User::getUsername);
+
+        artists.sort(comparator);
         int  i = 1;
         for (User artist : artists) {
             ObjectNode a = mapper.createObjectNode();
+            String mps = mostProfitableSong(artist);
+            if (Objects.equals(mps, ""))
+                mps = "N/A";
             double d = 0;
-            a.put("merchRevenue", d);
-            a.put("songRevenue", d);
+            a.put("merchRevenue", (double) Math.round(artist.getMerchRevenue() * 100) / 100);
+            a.put("songRevenue", (double) Math.round(artist.getSongRevenue() * 100) /100);
             a.put("ranking", i);
-            a.put("mostProfitableSong", "N/A");
+            a.put("mostProfitableSong", mps);
             i++;
             result.put(artist.getUsername(), a);
         }

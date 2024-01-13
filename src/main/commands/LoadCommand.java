@@ -5,6 +5,8 @@ import main.MusicPlayer;
 import main.Status;
 import main.User;
 import main.items.Item;
+import main.items.Podcast;
+import main.items.Song;
 import main.output.CommandOutput;
 
 import java.util.ArrayList;
@@ -31,6 +33,12 @@ public final class LoadCommand extends Command {
 
         if (!user.getMusicPlayer().getType().equals("songs")) {
             ArrayList<Item> list = user.getMusicPlayer().getSrc().getContent();
+            if (list.isEmpty()) {
+                output.setMessage("You can't load an empty audio collection!");
+                user.getMusicPlayer().getLastResults().clear();
+                return output;
+            }
+
             if (user.getMusicPlayer().getType().equals("podcasts")) {
                 if (user.getPlayedPodcasts().containsKey(musicPlayer.getSrc().getName())) {
 
@@ -43,6 +51,7 @@ public final class LoadCommand extends Command {
                         id++;
                         curr = list.get(id);
                     }
+                    user.updateHistoryEpisodes(list.get(id - 1));
 
                     musicPlayer.getLoadedStatus().setNewItemStatus(list.get(0), timestamp);
                     loadedStatus.setRemainedTime(cont - src.getDuration() + remainedTime);
@@ -53,14 +62,18 @@ public final class LoadCommand extends Command {
                     output.setMessage("Playback loaded successfully.");
                     user.getMusicPlayer().getLastResults().clear();
                     return output;
+                } else {
+                    user.updateHistoryEpisodes(list.get(0));
+
+                    String host = ((Podcast)src).getOwner();
+                    if (user.getArtistHistory().containsKey(host)) {
+                        user.getArtistHistory().put(host, user.getArtistHistory().get(host) + 1);
+                    } else {
+                        user.getArtistHistory().put(host, 1);
+                    }
                 }
             }
 
-            if (list.isEmpty()) {
-                output.setMessage("You can't load an empty audio collection!");
-                user.getMusicPlayer().getLastResults().clear();
-                return output;
-            }
             if (user.getMusicPlayer().getType().equals("playlists") ||
                     user.getMusicPlayer().getType().equals("albums")) {
                 ArrayList<Integer> order = user.getMusicPlayer().getOrder();

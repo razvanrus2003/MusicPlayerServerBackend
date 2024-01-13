@@ -7,6 +7,8 @@ import main.items.Item;
 import main.output.CommandOutput;
 import main.output.WrappedFormat.WrappedStat;
 import main.output.WrappedOutput;
+import net.sf.saxon.expr.Literal;
+import org.checkerframework.checker.units.qual.A;
 import org.checkerframework.checker.units.qual.C;
 
 import javax.swing.text.html.parser.Entity;
@@ -117,7 +119,7 @@ public class WrappedCommand extends Command {
         result.add(topSongs);
         result.add(topAlbums);
         result.add(topEpisodes);
-        if (result.get(1).isEmpty())
+        if (result.get(1).isEmpty() && result.get(5).isEmpty())
             return null;
         return result;
     }
@@ -185,6 +187,30 @@ public class WrappedCommand extends Command {
                         .toList()
         );
     }
+    private ArrayList<ArrayList<Map.Entry<String, Integer>>> getTopEpisodes(User host) {
+        ArrayList<ArrayList<Map.Entry<String, Integer>>> result = new ArrayList<>();
+        result.add(new ArrayList<>());
+        result.get(0).add(new AbstractMap.SimpleEntry<>("topEpisodes", 1));
+
+        Comparator<Map.Entry<String, Integer>> comparator = Comparator.comparing(Map.Entry::getValue);
+        comparator = comparator.reversed().thenComparing(Map.Entry.comparingByKey());
+
+        ArrayList<Map.Entry<String, Integer>> topEpisodes = new ArrayList<>(
+                host.getPlaylists()
+                        .stream()
+                        .map(Item::getContent)
+                        .flatMap(List::stream)
+                        .filter(item -> item.getListens() > 0)
+                        .collect(Collectors.toMap(Item::getName, Item::getListens))
+                        .entrySet()
+                        .stream()
+                        .sorted(comparator)
+                        .toList()
+        );
+
+        result.add(topEpisodes);
+        return result;
+    }
 
     @Override
     public CommandOutput execute() {
@@ -207,6 +233,16 @@ public class WrappedCommand extends Command {
             stats.setPairStats(artistResult(user));
             stats.setFans(getListenres(user));
             stats.setListeners(stats.getFans().size());
+            if (stats.getPairStats().get(1).isEmpty() && stats.getListeners() == 0)
+                stats.setPairStats(null);
+        } else if (user.getType().equals("host")){
+            for (User user1 : Library.getInstance().getUsers()) {
+                if (user1.getMusicPlayer() != null && user1.getMusicPlayer().getLoaded() != null && user1.isOnline() && user1 != user) {
+                    user1.getMusicPlayer().checkStatus(timestamp);
+                }
+            }
+            stats.setPairStats(getTopEpisodes(user));
+            stats.setListeners(getListenres(user).size());
         }
 
         output.setResults(stats);

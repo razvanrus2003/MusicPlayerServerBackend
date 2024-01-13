@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import main.Library;
+import main.MusicPlayer;
 import main.User;
 import main.commands.artist.AddAlbumCommand;
 
@@ -77,4 +78,8 @@ public final class Album extends Collection {
         return s;
     }
 
+    @Override
+    public Item next(MusicPlayer musicPlayer, int timestamp) {
+        return null;
+    }
 }

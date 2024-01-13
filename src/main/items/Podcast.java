@@ -79,6 +79,11 @@ public final class Podcast extends Collection {
 
         if (srcStatus.getRepeat().equals("No Repeat")) {
             if (srcStatus.checkPlayStatus(timestamp)) {
+                int pos = loadedStatus.getPosition();
+                for (; pos < episodes.size(); pos ++) {
+                    musicPlayer.getUser().updateHistoryEpisodes(episodes.get(pos));
+                }
+
                 loadedStatus.clearStatus();
                 return null;
             }
@@ -88,6 +93,8 @@ public final class Podcast extends Collection {
             while (loadedStatus.getRemainedTime() + loadedStatus.getPlayingSince() <= timestamp) {
                 pos++;
                 curr = episodes.get(pos);
+                musicPlayer.getUser().updateHistoryEpisodes(curr);
+
                 loadedStatus.setName(curr.getName());
                 loadedStatus.setPlayingSince(loadedStatus.getPlayingSince()
                         + loadedStatus.getRemainedTime());
@@ -105,6 +112,11 @@ public final class Podcast extends Collection {
                 loadedStatus.setRepeat("No repeat");
                 srcStatus.setRepeat("No repeat");
 
+                int pos = loadedStatus.getPosition();
+                for (; pos < episodes.size(); pos ++) {
+                    musicPlayer.getUser().updateHistoryEpisodes(episodes.get(pos));
+                }
+
                 srcStatus.setPlayingSince(srcStatus.getPlayingSince()
                         + srcStatus.getRemainedTime());
                 srcStatus.setRemainedTime(duration);
@@ -118,6 +130,8 @@ public final class Podcast extends Collection {
             while (loadedStatus.getRemainedTime() + loadedStatus.getPlayingSince() <= timestamp) {
                 pos++;
                 curr = episodes.get(pos);
+                musicPlayer.getUser().updateHistoryEpisodes(curr);
+
                 loadedStatus.setName(curr.getName());
                 loadedStatus.setPlayingSince(loadedStatus.getPlayingSince()
                         + loadedStatus.getRemainedTime());
@@ -139,6 +153,7 @@ public final class Podcast extends Collection {
                 pos = 0;
             }
             curr = episodes.get(pos);
+            musicPlayer.getUser().updateHistoryEpisodes(curr);
             loadedStatus.setName(curr.getName());
             loadedStatus.setPlayingSince(loadedStatus.getPlayingSince()
                     + loadedStatus.getRemainedTime());

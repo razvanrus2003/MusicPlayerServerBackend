@@ -38,7 +38,7 @@ import main.commands.stats.GetTop5AlbumsCommand;
 import main.commands.stats.GetTop5PlaylistsCommand;
 import main.commands.stats.GetTop5SongsCommand;
 import main.commands.stats.ShowPreferredSongsCommand;
-import main.commands.user.WrappedCommand;
+import main.commands.user.*;
 import main.output.CommandOutput;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME,
@@ -87,20 +87,17 @@ import main.output.CommandOutput;
         @JsonSubTypes.Type(value = PrintCurrentPageCommand.class, name = "printCurrentPage"),
         @JsonSubTypes.Type(value = ChangePageCommand.class, name = "changePage"),
         @JsonSubTypes.Type(value = WrappedCommand.class, name = "wrapped"),
-        @JsonSubTypes.Type(value = NullCommand.class, name = "buyPremium"),
-        @JsonSubTypes.Type(value = NullCommand.class, name = "cancelPremium"),
+        @JsonSubTypes.Type(value = BuyPremium.class, name = "buyPremium"),
+        @JsonSubTypes.Type(value = CancelPremium.class, name = "cancelPremium"),
         @JsonSubTypes.Type(value = NullCommand.class, name = "adBreak"),
         @JsonSubTypes.Type(value = NullCommand.class, name = "subscribe"),
         @JsonSubTypes.Type(value = NullCommand.class, name = "getNotifications"),
-        @JsonSubTypes.Type(value = NullCommand.class, name = "buyMerch"),
-        @JsonSubTypes.Type(value = NullCommand.class, name = "seeMerch"),
+        @JsonSubTypes.Type(value = BuyMerchCommand.class, name = "buyMerch"),
+        @JsonSubTypes.Type(value = SeeMerchCommand.class, name = "seeMerch"),
         @JsonSubTypes.Type(value = NullCommand.class, name = "updateRecommendations"),
         @JsonSubTypes.Type(value = NullCommand.class, name = "previousPage"),
         @JsonSubTypes.Type(value = NullCommand.class, name = "loadRecommendations"),
         @JsonSubTypes.Type(value = NullCommand.class, name = "nextPage"),
-
-
-
 })
 @Getter
 @Setter

@@ -25,6 +25,7 @@ public final class Song extends Item {
     private Integer releaseYear;
     private String artist;
     private int likes = 0;
+    private double revenue = 0;
 
     public Song() {
     }

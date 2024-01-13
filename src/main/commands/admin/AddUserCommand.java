@@ -8,6 +8,7 @@ import main.User;
 import main.commands.Command;
 import main.output.CommandOutput;
 import java.util.ArrayList;
+import java.util.List;
 
 @Setter
 @Getter
@@ -35,6 +36,10 @@ public final class AddUserCommand  extends Command {
         } else if (type.equals("host")) {
             newUser.setPosts(new ArrayList<>());
             Library.getInstance().getHosts().add(newUser);
+            Library.getInstance().getPodcasts().stream()
+                    .filter(podcast -> podcast.getOwner().equals(username))
+                    .forEach(podcast -> newUser.getPlaylists().add(podcast));
+
         } else {
             Library.getInstance().getUsers().add(newUser);
         }
