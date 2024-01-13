@@ -29,12 +29,15 @@ public final class Test {
             Arrays.sort(inputDir);
 
             Scanner scanner = new Scanner(System.in);
-            String fileName = scanner.next();
+            int fileName = scanner.nextInt();
+            int i = -1;
             for (File file : inputDir) {
-                if (file.getName().equalsIgnoreCase(fileName)) {
-                    Main.action(file.getAbsolutePath(), CheckerConstants.OUT_FILE);
+
+                if (i == fileName) {
+                    Main.action(file.getName(), CheckerConstants.OUT_FILE);
                     break;
                 }
+                i++;
             }
         }
     }
