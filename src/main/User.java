@@ -9,14 +9,12 @@ import main.artist.Merch;
 import main.commands.admin.AddUserCommand;
 import main.filters.Filters;
 import main.host.Post;
-import main.items.Album;
-import main.items.Episode;
-import main.items.Item;
-import main.items.Song;
+import main.items.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -43,6 +41,7 @@ public final class User {
     private double songRevenue = 0;
     private boolean premium = false;
     private ArrayList<Song> premiumSong = new ArrayList<>();
+    private ArrayList<Song> freeSong = new ArrayList<>();
 
     public User(final UserInput user) {
         this.username = user.getUsername();
@@ -131,7 +130,26 @@ public final class User {
         return s;
     }
 
+    public void monetizeUser() {
+        int price = ((Ad)freeSong.remove(freeSong.size() - 1)).getPrice();
+        double revenue = (double) price / freeSong.size();
+//        System.out.println(username + "->" + price);
+        for (Song song : freeSong) {
+
+            User artist = Library.getUser(song.getArtist());
+            if (artist != null) {
+                artist.setSongRevenue(artist.getSongRevenue() + revenue);
+            }
+            song.setRevenue(song.getRevenue() + revenue);
+        }
+        freeSong.clear();
+
+    }
+
     public void updateHistory(Item song) {
+//        if (musicPlayer.getLoadedStatus().getRemainedTime() == song.getDuration()) {
+//            System.out.println("here");
+//        }
         if (songHistory.containsKey(song)) {
             songHistory.put((Song)song, songHistory.get(song) + 1);
         } else {
@@ -155,8 +173,23 @@ public final class User {
         if (!musicPlayer.getType().equals("albums") && !musicPlayer.getType().equals("songs"))
             musicPlayer.getSrc().incListens();
         song.incListens();
-        if (premium)
-            premiumSong.add((Song)song);
+
+//        if (!freeSong.isEmpty()) {
+//            for (Song song1 : freeSong) {
+//                System.out.print(song1.getDuration() + " ");
+//            }
+//            System.out.println();
+//        }
+//        if (username.equals("bob35"))
+//            System.out.println(((Song) song).getAlbum() + " " + song.getName());
+        if (premium) {
+            premiumSong.add((Song) song);
+        } else {
+            if (!freeSong.isEmpty() && freeSong.get(freeSong.size() - 1).getDuration() == 0) {
+                monetizeUser();
+            }
+            freeSong.add((Song) song);
+        }
     }
 
     public void updateHistoryEpisodes(Item episode) {
@@ -180,12 +213,14 @@ public final class User {
         if (premium) {
             double revenue = (double) 1000000 / premiumSong.size();
             for (Song song : premiumSong) {
+
                 User artist = Library.getUser(song.getArtist());
                 if (artist != null) {
                     artist.setSongRevenue(artist.getSongRevenue() + revenue);
                 }
-                song.setRevenue(song.getRevenue() + songRevenue);
+                song.setRevenue(song.getRevenue() + revenue);
             }
+            premiumSong.clear();
             premium = false;
         }
     }

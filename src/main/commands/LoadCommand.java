@@ -38,6 +38,9 @@ public final class LoadCommand extends Command {
                 user.getMusicPlayer().getLastResults().clear();
                 return output;
             }
+            if (!user.getFreeSong().isEmpty() && user.getFreeSong().get(user.getFreeSong().size() - 1).getDuration() == 0) {
+                user.getFreeSong().remove(user.getFreeSong().size() - 1);
+            }
 
             if (user.getMusicPlayer().getType().equals("podcasts")) {
                 if (user.getPlayedPodcasts().containsKey(musicPlayer.getSrc().getName())) {
@@ -89,6 +92,11 @@ public final class LoadCommand extends Command {
         } else {
             loadedStatus.setNewItemStatus(user.getMusicPlayer().getSrc(), timestamp);
             user.getMusicPlayer().setLoaded(user.getMusicPlayer().getSrc());
+
+            if (!user.getFreeSong().isEmpty() && user.getFreeSong().get(user.getFreeSong().size() - 1).getDuration() == 0) {
+                user.getFreeSong().remove(user.getFreeSong().size() - 1);
+            }
+
             user.updateHistory(user.getMusicPlayer().getSrc());
         }
 

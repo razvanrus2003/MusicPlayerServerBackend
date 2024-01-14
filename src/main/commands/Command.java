@@ -89,7 +89,7 @@ import main.output.CommandOutput;
         @JsonSubTypes.Type(value = WrappedCommand.class, name = "wrapped"),
         @JsonSubTypes.Type(value = BuyPremium.class, name = "buyPremium"),
         @JsonSubTypes.Type(value = CancelPremium.class, name = "cancelPremium"),
-        @JsonSubTypes.Type(value = NullCommand.class, name = "adBreak"),
+        @JsonSubTypes.Type(value = AdBreakCommand.class, name = "adBreak"),
         @JsonSubTypes.Type(value = NullCommand.class, name = "subscribe"),
         @JsonSubTypes.Type(value = NullCommand.class, name = "getNotifications"),
         @JsonSubTypes.Type(value = BuyMerchCommand.class, name = "buyMerch"),

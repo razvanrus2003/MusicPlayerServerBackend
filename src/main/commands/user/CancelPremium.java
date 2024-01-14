@@ -16,11 +16,14 @@ public class CancelPremium extends Command {
             return output;
         }
 
-        if (user.isPremium()) {
+        if (user.getMusicPlayer() != null && user.getMusicPlayer().getLoaded() != null && user.isOnline()) {
+            user.getMusicPlayer().checkStatus(timestamp);
+        }
+
+        if (!user.isPremium()) {
             output.setMessage(username + " is not a premium user.");
             return output;
         }
-
         user.cancelPremium();
         output.setMessage(username + " cancelled the subscription successfully.");
         return output;

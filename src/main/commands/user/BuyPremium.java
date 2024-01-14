@@ -5,6 +5,8 @@ import main.User;
 import main.commands.Command;
 import main.output.CommandOutput;
 
+import java.util.ArrayList;
+
 public class BuyPremium extends Command {
 
     @Override
@@ -17,13 +19,19 @@ public class BuyPremium extends Command {
             return output;
         }
 
+        if (user.getMusicPlayer() != null && user.getMusicPlayer().getLoaded() != null && user.isOnline()) {
+            user.getMusicPlayer().checkStatus(timestamp);
+        }
+
         if (user.isPremium()) {
             output.setMessage(username + " is already a premium user.");
             return output;
         }
 
         user.setPremium(true);
+        user.setPremiumSong(new ArrayList<>());
         output.setMessage(username + " bought the subscription successfully.");
+
         return output;
     }
 }

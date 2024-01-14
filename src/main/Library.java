@@ -10,6 +10,7 @@ import main.commands.Command;
 import main.items.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -84,17 +85,36 @@ public final class Library {
     }
 
     public String mostProfitableSong(User artist) {
+//        artist.getPlaylists().stream()
+//                .map(Item::getContent)
+//                .flatMap(List::stream)
+//                .map(item -> (Song)item)
+//                .filter(song -> song.getRevenue() > 0)
+//                .forEach(song -> System.out.println(song.getName() + " " + song.getRevenue()));
+        Comparator<Map.Entry<String, Double>> comparator = Comparator.comparing(Map.Entry::getValue);
+        comparator = comparator.reversed().thenComparing(Map.Entry.comparingByKey()).reversed();
+
         return artist.getPlaylists().stream()
                 .map(Item::getContent)
                 .flatMap(List::stream)
                 .map(item -> (Song)item)
                 .filter(song -> song.getRevenue() > 0)
-                .sorted(Comparator.comparing(Song::getRevenue))
-                .map(Item::getName)
+                .collect(Collectors.groupingBy(
+                        Item::getName,
+                        Collectors.mapping(Song::getRevenue, Collectors.toList())))
+                .entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        r -> r.getValue().stream().reduce((double) 0, Double::sum)))
+                .entrySet()
+                .stream()
+                .sorted(comparator)
+                .map(Map.Entry::getKey)
                 .reduce("", (a , b) -> b);
     }
 
-    public ObjectNode endProgram(ObjectMapper mapper) {
+    public ObjectNode endProgram(ObjectMapper mapper, int timestamp) {
         ObjectNode output = mapper.createObjectNode();
         output.put("command", "endProgram");
 
@@ -103,6 +123,9 @@ public final class Library {
         ArrayList<User> artists = new ArrayList<>();
 
         for (User user : Library.getInstance().getUsers()) {
+            if (user.getMusicPlayer() != null && user.getMusicPlayer().getLoaded() != null && user.isOnline()) {
+                user.getMusicPlayer().checkStatus(timestamp);
+            }
             user.cancelPremium();
         }
 
@@ -124,7 +147,9 @@ public final class Library {
         int  i = 1;
         for (User artist : artists) {
             ObjectNode a = mapper.createObjectNode();
+
             String mps = mostProfitableSong(artist);
+
             if (Objects.equals(mps, ""))
                 mps = "N/A";
             double d = 0;

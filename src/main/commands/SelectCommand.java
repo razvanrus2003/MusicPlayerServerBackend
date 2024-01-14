@@ -7,6 +7,7 @@ import main.Library;
 import main.User;
 import main.items.Item;
 import main.items.Playlist;
+import main.items.Song;
 import main.output.CommandOutput;
 
 @Getter
@@ -32,6 +33,13 @@ public final class SelectCommand extends Command {
             output.setMessage(username + " is offline.");
             return output;
         }
+
+//        if (!user.getFreeSong().isEmpty()) {
+//            for (Song song1 : user.getFreeSong()) {
+//                System.out.print(song1.getDuration() + " ");
+//            }
+//            System.out.println();
+//        }
 
         if (user.getMusicPlayer().getLastResultsUsers() != null) {
             if (user.getMusicPlayer().getLastResultsUsers().size() < itemNumber) {

@@ -88,17 +88,19 @@ public final class Main {
                 new File(CheckerConstants.TESTS_PATH + filePathInput),
                 new TypeReference<List<Command>>() {
                 });
+        int lastTimestamp = 0;
         for (Command command : commandArray) {
-//            System.out.println(command.toString());
+//            if (command.getUsername().equals("bob35"))
+//                System.out.println(command.getUsername() + "=>" + command.getCommand() + "  " + command.getTimestamp());
             CommandOutput output = command.execute();
             ObjectNode node = objectMapper.createObjectNode();
-
             if (output != null) {
                 output.addToObjectNode(node, objectMapper);
+                lastTimestamp = output.getTimestamp();
             }
             outputs.add(node);
         }
-        outputs.add(Library.getInstance().endProgram(objectMapper));
+        outputs.add(Library.getInstance().endProgram(objectMapper, lastTimestamp));
         Library.reset();
 
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 @Getter
 @Setter
 @ToString
-public final class Song extends Item {
+public class Song extends Item {
     private String album;
     private ArrayList<String> tags;
     private String lyrics;
@@ -126,6 +126,11 @@ public final class Song extends Item {
         Status srcStatus = musicPlayer.getSrcStatus();
         Status loadedStatus = musicPlayer.getLoadedStatus();
         if (srcStatus.getRepeat().equals("No Repeat")) {
+            User user = musicPlayer.getUser();
+            if (!user.getFreeSong().isEmpty()
+                    && user.getFreeSong().get(user.getFreeSong().size() - 1).getDuration() == 0) {
+                musicPlayer.getUser().monetizeUser();
+            }
             loadedStatus.clearStatus();
             return null;
         }

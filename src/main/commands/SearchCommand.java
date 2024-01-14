@@ -36,8 +36,18 @@ public final class SearchCommand extends Command {
             output.setMessage(username + " is offline.");
             return output;
         }
-        if (user.getMusicPlayer().getSrc() != null)
-            user.getMusicPlayer().checkStatus(timestamp);
+//        if (!user.getFreeSong().isEmpty()) {
+//            for (Song song1 : user.getFreeSong()) {
+//                System.out.print(song1.getDuration() + " ");
+//            }
+//            System.out.println();
+//        }
+
+        if (user.getMusicPlayer().getSrc() != null) {
+            if (user.getMusicPlayer().getLoadedStatus().getPlayingSince()
+                    + user.getMusicPlayer().getLoadedStatus().getRemainedTime() - timestamp != 0)
+                user.getMusicPlayer().checkStatus(timestamp);
+        }
         user.saveTime(timestamp);
         user.clearPlayer();
         if (type.equals("artist")) {

@@ -74,14 +74,17 @@ public final class Playlist extends Collection {
         Status loadedStatus = musicPlayer.getLoadedStatus();
 
         if (srcStatus.getRepeat().equals("No Repeat")) {
-
             if (srcStatus.checkPlayStatus(timestamp)) {
                 int pos = loadedStatus.getPosition();
                 Item curr = songs.get(pos);
-
                 while (loadedStatus.getRemainedTime() + loadedStatus.getPlayingSince() <= timestamp) {
                     pos = getNextSong(pos, srcStatus.getOrder());
                     if (pos == srcStatus.getOrder().size()) {
+                        User user = musicPlayer.getUser();
+                        if (!user.getFreeSong().isEmpty()
+                                && user.getFreeSong().get(user.getFreeSong().size() - 1).getDuration() == 0) {
+                            musicPlayer.getUser().monetizeUser();
+                        }
                         loadedStatus.clearStatus();
 
                         break;
@@ -106,6 +109,13 @@ public final class Playlist extends Collection {
             while (loadedStatus.getRemainedTime() + loadedStatus.getPlayingSince() <= timestamp) {
                 pos = getNextSong(pos, srcStatus.getOrder());
                 if (pos == srcStatus.getOrder().size()) {
+                    User user = musicPlayer.getUser();
+                    if (!user.getFreeSong().isEmpty()
+                            && user.getFreeSong().get(user.getFreeSong().size() - 1).getDuration() == 0) {
+                        musicPlayer.getUser().monetizeUser();
+                    }
+                    loadedStatus.clearStatus();
+
                     loadedStatus.clearStatus();
 
                     return null;
