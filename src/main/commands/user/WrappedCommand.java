@@ -4,11 +4,13 @@ import main.Library;
 import main.User;
 import main.commands.Command;
 import main.items.Item;
+import main.items.Song;
 import main.output.CommandOutput;
 import main.output.Formats.WrappedStat;
 import main.output.WrappedOutput;
 
 import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class WrappedCommand extends Command {
@@ -129,31 +131,67 @@ public class WrappedCommand extends Command {
         comparator = comparator.reversed().thenComparing(Map.Entry.comparingByKey());
 
         ArrayList<Map.Entry<String, Integer>> topAlbums = new ArrayList<>(
-                artist.getPlaylists().stream()
-                        .collect(Collectors.toMap(
-                                Item::getName,
-                                Item::getListens))
+//                artist.getPlaylists().stream()
+//                        .collect(Collectors.toMap(
+//                                Item::getName,
+//                                Item::getListens))
+//                        .entrySet()
+//                        .stream()
+//                        .filter(entry -> entry.getValue() != 0)
+//                        .sorted(comparator)
+//                        .toList()
+                Library.getInstance().getUsers().stream()
+                        .map(user -> user.getSongHistory().entrySet())
+                        .flatMap(Set::stream)
+                        .filter(entry -> entry.getKey().getArtist().equals(artist.getUsername()))
+                        .collect(Collectors.groupingBy(
+                                entry -> ((Map.Entry<Song, Integer>)entry).getKey().getAlbum(),
+                                Collectors.mapping(
+                                        entry -> ((Map.Entry<Song, Integer>)entry).getValue(),
+                                        Collectors.toList()
+                                )
+                        ))
                         .entrySet()
                         .stream()
-                        .filter(entry -> entry.getValue() != 0)
+                        .map(entry -> new AbstractMap.SimpleEntry<String, Integer>(
+                                entry.getKey(),
+                                entry.getValue().stream().reduce(0, Integer::sum)))
                         .sorted(comparator)
                         .toList()
         );
 
         ArrayList<Map.Entry<String, Integer>> topSongs = new ArrayList<>(
-                artist.getPlaylists().stream()
-                        .map(Item::getContent)
-                        .flatMap(List::stream)
+//                artist.getPlaylists().stream()
+//                        .map(Item::getContent)
+//                        .flatMap(List::stream)
+//                        .collect(Collectors.groupingBy(
+//                                Item::getName,
+//                                Collectors.mapping(Item::getListens, Collectors.toList())))
+//                        .entrySet()
+//                        .stream()
+//                        .collect(Collectors.toMap(
+//                                Map.Entry::getKey,
+//                                e-> e.getValue().stream().reduce(0, Integer::sum)))
+//                        .entrySet()
+//                        .stream()
+//                        .sorted(comparator)
+//                        .toList()
+                Library.getInstance().getUsers().stream()
+                        .map(user -> user.getSongHistory().entrySet())
+                        .flatMap(Set::stream)
+                        .filter(entry -> entry.getKey().getArtist().equals(artist.getUsername()))
                         .collect(Collectors.groupingBy(
-                                Item::getName,
-                                Collectors.mapping(Item::getListens, Collectors.toList())))
+                                entry -> ((Map.Entry<Song, Integer>)entry).getKey().getName(),
+                                Collectors.mapping(
+                                        entry -> ((Map.Entry<Song, Integer>)entry).getValue(),
+                                        Collectors.toList()
+                                )
+                        ))
                         .entrySet()
                         .stream()
-                        .collect(Collectors.toMap(
-                                Map.Entry::getKey,
-                                e-> e.getValue().stream().reduce(0, Integer::sum)))
-                        .entrySet()
-                        .stream()
+                        .map(entry -> new AbstractMap.SimpleEntry<String, Integer>(
+                                entry.getKey(),
+                                entry.getValue().stream().reduce(0, Integer::sum)))
                         .sorted(comparator)
                         .toList()
         );

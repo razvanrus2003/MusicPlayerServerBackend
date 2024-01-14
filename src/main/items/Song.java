@@ -44,10 +44,11 @@ public class Song extends Item {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Song song)) return false;
-
-        if (!getName().equalsIgnoreCase(song.getName())) return false;
-        return getArtist().equals(song.getArtist());
+        Song song = (Song) o;
+        return song.getName().equalsIgnoreCase(name)
+                && song.getArtist().equals(artist)
+                && song.getAlbum().equals(album)
+                && song.getGenre().equals(genre);
     }
 
     @Override

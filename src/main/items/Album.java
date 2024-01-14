@@ -15,7 +15,6 @@ import java.util.ArrayList;
 
 @Getter
 @Setter
-@ToString
 public final class Album extends Collection {
 
     private int releaseYear;

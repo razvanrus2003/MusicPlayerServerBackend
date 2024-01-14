@@ -20,6 +20,12 @@ public final class RemoveAlbumCommand extends Command {
         User user = Library.getUser(username);
         CommandOutput output = new CommandOutput(this);
 
+        for (User user1: Library.getInstance().getUsers()) {
+            if (user1.getMusicPlayer().getLoaded() != null) {
+                user1.getMusicPlayer().checkStatus(timestamp);
+            }
+        }
+
         if (user == null) {
             output.setMessage("The username " + username + " doesn't exist.");
             return output;

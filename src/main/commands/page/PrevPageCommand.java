@@ -5,7 +5,7 @@ import main.User;
 import main.commands.Command;
 import main.output.CommandOutput;
 
-public class NextPageCommand extends Command {
+public class PrevPageCommand extends Command {
     @Override
     public CommandOutput execute() {
         CommandOutput output = new CommandOutput(this);
@@ -16,13 +16,13 @@ public class NextPageCommand extends Command {
             return output;
         }
 
-        if (user.getNextPagesCommand().isEmpty()) {
-            output.setMessage("There are no pages left to go forward.");
+        if (user.getPrevPagesCommand().isEmpty()) {
+            output.setMessage("There are no pages left to go back.");
             return output;
         }
 
-        user.nextPage();
-        output.setMessage("The user " + username + " has navigated successfully to the next page.");
+        user.prevPage();
+        output.setMessage("The user " + username + " has navigated successfully to the previous page.");
 
         return output;
     }

@@ -26,6 +26,12 @@ public final class LoadCommand extends Command {
             return output;
         }
 
+        if (user.getMusicPlayer().getSrc() != null) {
+            if (user.getMusicPlayer().getLoadedStatus().getPlayingSince()
+                    + user.getMusicPlayer().getLoadedStatus().getRemainedTime() - timestamp != 0)
+                user.getMusicPlayer().checkStatus(timestamp);
+        }
+
         Status loadedStatus = musicPlayer.getLoadedStatus();
         Item src = musicPlayer.getSrc();
 

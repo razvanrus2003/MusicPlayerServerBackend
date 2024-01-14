@@ -7,12 +7,15 @@ import lombok.ToString;
 import main.artist.Event;
 import main.artist.Merch;
 import main.commands.admin.AddUserCommand;
+import main.commands.player.ForwardCommand;
 import main.filters.Filters;
 import main.host.Post;
 import main.items.*;
 import main.observer.NewsObserver;
 import main.observer.Observer;
 import main.output.Formats.Notification;
+import main.pageControl.PageCommand;
+import net.sf.saxon.functions.PositionAndLast;
 import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
@@ -22,7 +25,6 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
 public final class User {
     private String username;
     private int age;
@@ -32,7 +34,8 @@ public final class User {
     private ArrayList<Item> playlists = new ArrayList<Item>();
     private ArrayList<Item> followedPlayLists = new ArrayList<Item>();
     private HashMap<String, Integer> playedPodcasts = new HashMap<String, Integer>();
-    private String page;
+    private String page = null;
+    private User pageOwner = null;
     private String status;
     private String type;
     private ArrayList<Event> events;
@@ -49,6 +52,18 @@ public final class User {
     private ArrayList<Notification> notifications = new ArrayList<>();
     private ArrayList<Observer> subscribers = new ArrayList<>();
     private NewsObserver newsObserver = new NewsObserver(this);
+    private ArrayList<PageCommand> nextPagesCommand = new ArrayList<>();
+    private ArrayList<PageCommand> prevPagesCommand = new ArrayList<>();
+    private ArrayList<Item> recommendation = new ArrayList<>();
+    private ArrayList<String> recommendationType = new ArrayList<>();
+
+    public ArrayList<Item> getLikedSongs() {
+        return likedSongs;
+    }
+
+    public void setLikedSongs(ArrayList<Item> likedSongs) {
+        this.likedSongs = likedSongs;
+    }
 
     public User(final UserInput user) {
         this.username = user.getUsername();
@@ -238,12 +253,21 @@ public final class User {
         }
     }
 
-    public void subscribe(Observer observer) {
-        subscribers.add(observer);
+    public void nextPage() {
+        if (nextPagesCommand.isEmpty())
+            return;
+        PageCommand command = nextPagesCommand.remove(nextPagesCommand.size() - 1);
+
+        prevPagesCommand.add(command);
+        command.execute();
     }
 
-    public void unsubscribe(Observer observer) {
-        subscribers.add(observer);
-    }
+    public void prevPage() {
+        if (prevPagesCommand.isEmpty())
+            return;
+        PageCommand command = prevPagesCommand.remove(prevPagesCommand.size() - 1);
 
+        nextPagesCommand.add(command);
+        command.undo();
+    }
 }

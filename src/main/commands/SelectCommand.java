@@ -9,6 +9,8 @@ import main.items.Item;
 import main.items.Playlist;
 import main.items.Song;
 import main.output.CommandOutput;
+import main.pageControl.ChangePage;
+import main.pageControl.PageCommand;
 
 @Getter
 @Setter
@@ -48,11 +50,19 @@ public final class SelectCommand extends Command {
             }
             user.getMusicPlayer().setSelected(user.getMusicPlayer().getLastResultsUsers().get(itemNumber - 1));
             user.getMusicPlayer().setLastResultsUsers(null);
+
+            String pageType;
             if (user.getMusicPlayer().getSelected().getType().equals("artist")) {
-                user.setPage("Artist");
+                pageType ="Artist";
             } else {
-                user.setPage("Host");
+                pageType = "Host";
             }
+
+            PageCommand pageCommand = new ChangePage(user, user.getMusicPlayer().getSelected(), pageType);
+            user.getNextPagesCommand().clear();
+            user.getNextPagesCommand().add(pageCommand);
+            user.nextPage();
+
             output.setMessage("Successfully selected "
                     + user.getMusicPlayer().getSelected().getUsername()
                     + "'s page.");

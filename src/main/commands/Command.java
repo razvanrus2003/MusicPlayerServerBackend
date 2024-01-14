@@ -21,6 +21,8 @@ import main.commands.host.RemovePodcastCommand;
 import main.commands.notifications.GetNotificationsCommand;
 import main.commands.notifications.SubscribeCommand;
 import main.commands.page.ChangePageCommand;
+import main.commands.page.NextPageCommand;
+import main.commands.page.PrevPageCommand;
 import main.commands.page.PrintCurrentPageCommand;
 import main.commands.player.NextCommand;
 import main.commands.player.PrevCommand;
@@ -33,6 +35,8 @@ import main.commands.playlist.CreatePlaylistCommand;
 import main.commands.playlist.FollowPlaylistCommand;
 import main.commands.playlist.ShowPlaylistsCommand;
 import main.commands.playlist.SwitchVisibilityCommand;
+import main.commands.recommendation.LoadRecommendationCommand;
+import main.commands.recommendation.UpdateRecommendationsCommand;
 import main.commands.stats.GetAllUsersCommand;
 import main.commands.stats.GetOnlineUsersCommand;
 import main.commands.stats.GetTop5ArtistsCommand;
@@ -96,10 +100,10 @@ import main.output.CommandOutput;
         @JsonSubTypes.Type(value = GetNotificationsCommand.class, name = "getNotifications"),
         @JsonSubTypes.Type(value = BuyMerchCommand.class, name = "buyMerch"),
         @JsonSubTypes.Type(value = SeeMerchCommand.class, name = "seeMerch"),
-        @JsonSubTypes.Type(value = NullCommand.class, name = "updateRecommendations"),
-        @JsonSubTypes.Type(value = NullCommand.class, name = "previousPage"),
-        @JsonSubTypes.Type(value = NullCommand.class, name = "loadRecommendations"),
-        @JsonSubTypes.Type(value = NullCommand.class, name = "nextPage"),
+        @JsonSubTypes.Type(value = PrevPageCommand.class, name = "previousPage"),
+        @JsonSubTypes.Type(value = NextPageCommand.class, name = "nextPage"),
+        @JsonSubTypes.Type(value = UpdateRecommendationsCommand.class, name = "updateRecommendations"),
+        @JsonSubTypes.Type(value = LoadRecommendationCommand.class, name = "loadRecommendations"),
 })
 @Getter
 @Setter

@@ -6,7 +6,11 @@ import lombok.ToString;
 import main.Library;
 import main.User;
 import main.commands.Command;
+import main.items.Podcast;
+import main.items.Song;
 import main.output.CommandOutput;
+import main.pageControl.ChangePage;
+import main.pageControl.PageCommand;
 
 @Getter
 @Setter
@@ -19,19 +23,49 @@ public final class ChangePageCommand extends Command {
         User user = Library.getUser(username);
         CommandOutput output = new CommandOutput(this);
 
+        if (user.getMusicPlayer() != null && user.getMusicPlayer().getLoaded() != null && user.isOnline()) {
+            user.getMusicPlayer().checkStatus(timestamp);
+        }
+
         output.setMessage(username + " is trying to access a non-existent page.");
         if (nextPage.equals("Home")) {
-            user.getMusicPlayer().setSelected(null);
-            user.setPage(nextPage);
             output.setMessage(username + " accessed Home successfully.");
+
+            PageCommand pageCommand = new ChangePage(user, null, nextPage);
+            user.getNextPagesCommand().clear();
+            user.getNextPagesCommand().add(pageCommand);
+            user.nextPage();
 
         }
         if (nextPage.equals("LikedContent")) {
-            user.getMusicPlayer().setSelected(null);
-
-            user.setPage(nextPage);
             output.setMessage(username + " accessed LikedContent successfully.");
 
+            PageCommand pageCommand = new ChangePage(user, null, nextPage);
+            user.getNextPagesCommand().clear();
+            user.getNextPagesCommand().add(pageCommand);
+            user.nextPage();
+
+        }
+        if (nextPage.equals("Artist")) {
+            user.getMusicPlayer().setSelected(Library.getUser(((Song)user.getMusicPlayer().getLoaded()).getArtist()));
+
+            output.setMessage(username + " accessed Artist successfully.");
+
+            PageCommand pageCommand = new ChangePage(user, user.getMusicPlayer().getSelected(), nextPage);
+            user.getNextPagesCommand().clear();
+            user.getNextPagesCommand().add(pageCommand);
+            user.nextPage();
+
+        }
+        if (nextPage.equals("Host")) {
+            user.getMusicPlayer().setSelected(Library.getUser(((Podcast)user.getMusicPlayer().getSrc()).getOwner()));
+
+            PageCommand pageCommand = new ChangePage(user, user.getMusicPlayer().getSelected(), nextPage);
+            user.getNextPagesCommand().clear();
+            user.getNextPagesCommand().add(pageCommand);
+            user.nextPage();
+
+            output.setMessage(username + " accessed Host successfully.");
         }
 
         return output;

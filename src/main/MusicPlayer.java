@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 @Getter
 @Setter
-@ToString
+//@ToString
 public final class MusicPlayer {
     private User user;
     private Item src = null;
