@@ -72,6 +72,7 @@ public final class AddAlbumCommand extends Command {
         Album newAlbum = new Album(this);
         user.getPlaylists().add(newAlbum);
         Library.getInstance().getAlbums().add(newAlbum);
+        user.notifyObservers("New Album");
         return output;
     }
 }

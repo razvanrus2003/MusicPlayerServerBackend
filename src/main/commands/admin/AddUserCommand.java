@@ -8,7 +8,6 @@ import main.User;
 import main.commands.Command;
 import main.output.CommandOutput;
 import java.util.ArrayList;
-import java.util.List;
 
 @Setter
 @Getter
@@ -32,6 +31,7 @@ public final class AddUserCommand  extends Command {
         if (type.equals("artist")) {
             newUser.setMerches(new ArrayList<>());
             newUser.setEvents(new ArrayList<>());
+
             Library.getInstance().getArtists().add(newUser);
         } else if (type.equals("host")) {
             newUser.setPosts(new ArrayList<>());

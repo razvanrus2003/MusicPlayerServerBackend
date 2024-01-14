@@ -55,8 +55,9 @@ public final class RemoveAlbumCommand extends Command {
         for (Item song : toDelete.getContent()) {
             Library.getInstance().getSongs().remove(song);
         }
-        Library.getInstance().getArtists().remove(toDelete);
-        output.setMessage(username + "  deleted the album successfully.");
+        Library.getInstance().getAlbums().remove(toDelete);
+        user.getPlaylists().remove(toDelete);
+        output.setMessage(username + " deleted the album successfully.");
 
         return output;
     }

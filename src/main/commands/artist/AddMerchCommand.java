@@ -57,6 +57,7 @@ public final class AddMerchCommand extends Command {
 
         user.getMerches().add(new Merch(this));
         output.setMessage(username + " has added new merchandise successfully.");
+        user.notifyObservers("New Merchandise");
         return output;
     }
 }

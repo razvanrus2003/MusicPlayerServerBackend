@@ -10,6 +10,10 @@ import main.commands.admin.AddUserCommand;
 import main.filters.Filters;
 import main.host.Post;
 import main.items.*;
+import main.observer.NewsObserver;
+import main.observer.Observer;
+import main.output.Formats.Notification;
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,6 +46,9 @@ public final class User {
     private boolean premium = false;
     private ArrayList<Song> premiumSong = new ArrayList<>();
     private ArrayList<Song> freeSong = new ArrayList<>();
+    private ArrayList<Notification> notifications = new ArrayList<>();
+    private ArrayList<Observer> subscribers = new ArrayList<>();
+    private NewsObserver newsObserver = new NewsObserver(this);
 
     public User(final UserInput user) {
         this.username = user.getUsername();
@@ -224,4 +231,19 @@ public final class User {
             premium = false;
         }
     }
+
+    public void notifyObservers(String news) {
+        for(Observer observer: subscribers) {
+            observer.update(news, this);
+        }
+    }
+
+    public void subscribe(Observer observer) {
+        subscribers.add(observer);
+    }
+
+    public void unsubscribe(Observer observer) {
+        subscribers.add(observer);
+    }
+
 }

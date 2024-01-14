@@ -8,10 +8,9 @@ import lombok.Setter;
 import lombok.ToString;
 import main.Library;
 import main.commands.Command;
-import main.output.WrappedFormat.WrappedStat;
+import main.output.Formats.WrappedStat;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import static java.lang.Math.min;
 

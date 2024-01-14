@@ -18,6 +18,8 @@ import main.commands.host.AddAnnouncementCommand;
 import main.commands.host.AddPodcastCommand;
 import main.commands.host.RemoveAnnouncementCommand;
 import main.commands.host.RemovePodcastCommand;
+import main.commands.notifications.GetNotificationsCommand;
+import main.commands.notifications.SubscribeCommand;
 import main.commands.page.ChangePageCommand;
 import main.commands.page.PrintCurrentPageCommand;
 import main.commands.player.NextCommand;
@@ -90,8 +92,8 @@ import main.output.CommandOutput;
         @JsonSubTypes.Type(value = BuyPremium.class, name = "buyPremium"),
         @JsonSubTypes.Type(value = CancelPremium.class, name = "cancelPremium"),
         @JsonSubTypes.Type(value = AdBreakCommand.class, name = "adBreak"),
-        @JsonSubTypes.Type(value = NullCommand.class, name = "subscribe"),
-        @JsonSubTypes.Type(value = NullCommand.class, name = "getNotifications"),
+        @JsonSubTypes.Type(value = SubscribeCommand.class, name = "subscribe"),
+        @JsonSubTypes.Type(value = GetNotificationsCommand.class, name = "getNotifications"),
         @JsonSubTypes.Type(value = BuyMerchCommand.class, name = "buyMerch"),
         @JsonSubTypes.Type(value = SeeMerchCommand.class, name = "seeMerch"),
         @JsonSubTypes.Type(value = NullCommand.class, name = "updateRecommendations"),

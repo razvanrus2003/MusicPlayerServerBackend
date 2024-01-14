@@ -65,6 +65,7 @@ public final class AddEventCommand extends Command {
 
         user.getEvents().add(new Event(this));
         output.setMessage(username + " has added new event successfully.");
+        user.notifyObservers("New Event");
         return output;
     }
 }
