@@ -4,14 +4,19 @@ import main.Library;
 import main.User;
 import main.commands.Command;
 import main.output.CommandOutput;
-import main.output.GetNotificationsOutput;
 
-public class SubscribeCommand extends Command {
+/**
+ * SubscribeCommand class is responsible for subscribing to an artist or host.
+ * <p>
+ * It extends the Command class.
+ */
+public final class SubscribeCommand extends Command {
+
     @Override
     public CommandOutput execute() {
         CommandOutput output = new CommandOutput(this);
 
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
         if (user == null) {
             output.setMessage("The username " + username + " doesn't exist.");
             return output;
@@ -27,13 +32,13 @@ public class SubscribeCommand extends Command {
             output.setMessage(username
                     + " unsubscribed from "
                     + user.getMusicPlayer().getSelected().getUsername()
-                    +" successfully.");
+                    + " successfully.");
         } else {
             user.getMusicPlayer().getSelected().getSubscribers().add(user.getNewsObserver());
             output.setMessage(username
                     + " subscribed to "
                     + user.getMusicPlayer().getSelected().getUsername()
-                    +" successfully.");
+                    + " successfully.");
         }
         return output;
     }

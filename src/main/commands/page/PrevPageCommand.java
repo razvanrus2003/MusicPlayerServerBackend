@@ -5,12 +5,15 @@ import main.User;
 import main.commands.Command;
 import main.output.CommandOutput;
 
-public class PrevPageCommand extends Command {
+/**
+ * This class is a subclass of Command and is used to navigate to the previous page.
+ */
+public final class PrevPageCommand extends Command {
     @Override
     public CommandOutput execute() {
         CommandOutput output = new CommandOutput(this);
 
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
         if (user == null) {
             output.setMessage("The username " + username + " doesn't exist.");
             return output;
@@ -22,7 +25,9 @@ public class PrevPageCommand extends Command {
         }
 
         user.prevPage();
-        output.setMessage("The user " + username + " has navigated successfully to the previous page.");
+        output.setMessage("The user "
+                + username
+                + " has navigated successfully to the previous page.");
 
         return output;
     }

@@ -7,12 +7,13 @@ import main.Library;
 import main.User;
 import main.commands.Command;
 import main.output.CommandOutput;
+
 import java.util.ArrayList;
 
 @Setter
 @Getter
 @ToString
-public final class AddUserCommand  extends Command {
+public final class AddUserCommand extends Command {
     private int age;
     private String city;
     private String type;
@@ -21,7 +22,7 @@ public final class AddUserCommand  extends Command {
     public CommandOutput execute() {
         CommandOutput output = new CommandOutput(this);
 
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
         if (user != null) {
             output.setMessage("The username " + username + " is already taken.");
             return output;

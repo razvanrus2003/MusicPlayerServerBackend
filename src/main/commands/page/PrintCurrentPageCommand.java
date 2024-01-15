@@ -20,23 +20,11 @@ public final class PrintCurrentPageCommand extends Command {
     @Override
     public CommandOutput execute() {
         PrintCurrentPageOutput output = new PrintCurrentPageOutput(this);
-
-        User user = Library.getUser(username);
-        if (user == null) {
-            output.setMessage("The username " + username + " doesn't exist.");
-            return output;
-        }
-
-        if (!user.isOnline()) {
-            output.setMessage(username + " is offline.");
-            return output;
-        }
-
-        String message = new String();
+        User user = Library.getInstance().getUser(username);
+        String message = "";
         if (user.getPage().equals("Home")) {
-            message = new String("Liked songs:\n\t[");
+            message = "Liked songs:\n\t[";
             ArrayList<Song> top5 = new ArrayList<Song>();
-
             ArrayList<Item> songs = user.getLikedSongs();
             for (Item song : songs) {
                 if (top5.isEmpty()) {
@@ -55,7 +43,6 @@ public final class PrintCurrentPageCommand extends Command {
                 }
 
             }
-
             for (int i = 0; i < min(FIVE, user.getLikedSongs().size()); i++) {
                 if (i > 0) {
                     message = message.concat(", ");
@@ -93,8 +80,8 @@ public final class PrintCurrentPageCommand extends Command {
             }
             message = message.concat("]");
         } else if (user.getPage().equals("Artist")) {
-            User artist = user.getPageOwner();;
-            message = new String("Albums:\n\t[");
+            User artist = user.getPageOwner();
+            message = "Albums:\n\t[";
             for (int i = 0; i < artist.getPlaylists().size(); i++) {
                 if (i > 0) {
                     message = message.concat(", ");
@@ -126,7 +113,7 @@ public final class PrintCurrentPageCommand extends Command {
             message = message.concat("]");
         } else if (user.getPage().equals("Host")) {
             User artist = user.getPageOwner();
-            message = new String("Podcasts:\n\t[");
+            message = "Podcasts:\n\t[";
             for (int i = 0; i < artist.getPlaylists().size(); i++) {
                 if (i > 0) {
                     message = message.concat("]\n, ");
@@ -136,9 +123,12 @@ public final class PrintCurrentPageCommand extends Command {
                     if (j > 0) {
                         message = message.concat(", ");
                     }
-                    message = message.concat(artist.getPlaylists().get(i).getContent().get(j).getName() + " - " + ((Episode) artist.getPlaylists().get(i).getContent().get(j)).getDescription());
+                    message = message.concat(
+                            artist.getPlaylists().get(i).getContent().get(j).getName()
+                                    + " - "
+                                    + ((Episode) artist.getPlaylists()
+                                    .get(i).getContent().get(j)).getDescription());
                 }
-
             }
             message = message.concat("]\n]\n\nAnnouncements:\n\t[");
             for (int i = 0; i < artist.getPosts().size(); i++) {
@@ -151,8 +141,7 @@ public final class PrintCurrentPageCommand extends Command {
             }
             message = message.concat("]");
         } else if (user.getPage().equals("LikedContent")) {
-
-            message = new String("Liked songs:\n\t[");
+            message = "Liked songs:\n\t[";
             for (int i = 0; i < user.getLikedSongs().size(); i++) {
                 if (i > 0) {
                     message = message.concat(", ");
@@ -175,7 +164,6 @@ public final class PrintCurrentPageCommand extends Command {
         }
 
         output.setMessage(message);
-
         return output;
     }
 }

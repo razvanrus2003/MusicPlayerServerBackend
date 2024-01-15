@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public final class ShowPreferredSongsCommand extends Command {
     @Override
     public CommandOutput execute() {
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
 
         ArrayList<Item> results = user.getLikedSongs();
 

@@ -21,7 +21,7 @@ public final class AddRemoveInPlaylistCommand extends Command {
     public CommandOutput execute() {
         CommandOutput output = new CommandOutput(this);
 
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
 
         if (user.getMusicPlayer() != null) {
             user.getMusicPlayer().checkStatus(timestamp);

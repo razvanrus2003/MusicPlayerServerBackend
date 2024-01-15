@@ -10,8 +10,8 @@ import main.commands.admin.DeleteUserCommand;
 import main.commands.admin.ShowAlbumsCommand;
 import main.commands.admin.ShowPodcastsCommand;
 import main.commands.artist.AddAlbumCommand;
-import main.commands.artist.AddMerchCommand;
 import main.commands.artist.AddEventCommand;
+import main.commands.artist.AddMerchCommand;
 import main.commands.artist.RemoveAlbumCommand;
 import main.commands.artist.RemoveEventCommand;
 import main.commands.host.AddAnnouncementCommand;
@@ -24,13 +24,13 @@ import main.commands.page.ChangePageCommand;
 import main.commands.page.NextPageCommand;
 import main.commands.page.PrevPageCommand;
 import main.commands.page.PrintCurrentPageCommand;
+import main.commands.player.BackwardCommand;
+import main.commands.player.ForwardCommand;
 import main.commands.player.NextCommand;
-import main.commands.player.PrevCommand;
 import main.commands.player.PlayPauseCommand;
+import main.commands.player.PrevCommand;
 import main.commands.player.RepetCommand;
 import main.commands.player.ShuffleCommand;
-import main.commands.player.ForwardCommand;
-import main.commands.player.BackwardCommand;
 import main.commands.playlist.CreatePlaylistCommand;
 import main.commands.playlist.FollowPlaylistCommand;
 import main.commands.playlist.ShowPlaylistsCommand;
@@ -39,12 +39,17 @@ import main.commands.recommendation.LoadRecommendationCommand;
 import main.commands.recommendation.UpdateRecommendationsCommand;
 import main.commands.stats.GetAllUsersCommand;
 import main.commands.stats.GetOnlineUsersCommand;
-import main.commands.stats.GetTop5ArtistsCommand;
 import main.commands.stats.GetTop5AlbumsCommand;
+import main.commands.stats.GetTop5ArtistsCommand;
 import main.commands.stats.GetTop5PlaylistsCommand;
 import main.commands.stats.GetTop5SongsCommand;
 import main.commands.stats.ShowPreferredSongsCommand;
-import main.commands.user.*;
+import main.commands.user.AdBreakCommand;
+import main.commands.user.BuyMerchCommand;
+import main.commands.user.BuyPremium;
+import main.commands.user.CancelPremium;
+import main.commands.user.SeeMerchCommand;
+import main.commands.user.WrappedCommand;
 import main.output.CommandOutput;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME,
@@ -85,7 +90,8 @@ import main.output.CommandOutput;
         @JsonSubTypes.Type(value = RemovePodcastCommand.class, name = "removePodcast"),
         @JsonSubTypes.Type(value = AddAnnouncementCommand.class, name = "addAnnouncement"),
         @JsonSubTypes.Type(value = RemoveAnnouncementCommand.class, name = "removeAnnouncement"),
-        @JsonSubTypes.Type(value = SwitchConnectionStatusCommand.class, name = "switchConnectionStatus"),
+        @JsonSubTypes.Type(value = SwitchConnectionStatusCommand.class,
+                name = "switchConnectionStatus"),
         @JsonSubTypes.Type(value = GetTop5AlbumsCommand.class, name = "getTop5Albums"),
         @JsonSubTypes.Type(value = GetTop5ArtistsCommand.class, name = "getTop5Artists"),
         @JsonSubTypes.Type(value = GetAllUsersCommand.class, name = "getAllUsers"),
@@ -102,9 +108,11 @@ import main.output.CommandOutput;
         @JsonSubTypes.Type(value = SeeMerchCommand.class, name = "seeMerch"),
         @JsonSubTypes.Type(value = PrevPageCommand.class, name = "previousPage"),
         @JsonSubTypes.Type(value = NextPageCommand.class, name = "nextPage"),
-        @JsonSubTypes.Type(value = UpdateRecommendationsCommand.class, name = "updateRecommendations"),
+        @JsonSubTypes.Type(value = UpdateRecommendationsCommand.class,
+                name = "updateRecommendations"),
         @JsonSubTypes.Type(value = LoadRecommendationCommand.class, name = "loadRecommendations"),
 })
+
 @Getter
 @Setter
 @ToString
@@ -114,7 +122,9 @@ public abstract class Command {
     protected int timestamp;
 
     /**
-     * @return
+     * Abstract method that executes the command.
+     *
+     * @return the output of the command
      */
     public abstract CommandOutput execute();
 }

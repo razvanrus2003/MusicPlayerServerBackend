@@ -3,28 +3,30 @@ package main;
 import fileio.input.UserInput;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import main.artist.Event;
 import main.artist.Merch;
 import main.commands.admin.AddUserCommand;
-import main.commands.player.ForwardCommand;
 import main.filters.Filters;
 import main.host.Post;
-import main.items.*;
+import main.items.Ad;
+import main.items.Album;
+import main.items.Episode;
+import main.items.Item;
+import main.items.Song;
 import main.observer.NewsObserver;
 import main.observer.Observer;
 import main.output.Formats.Notification;
 import main.pageControl.PageCommand;
-import net.sf.saxon.functions.PositionAndLast;
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Objects;
 
 @Getter
 @Setter
+/**
+ * User class
+ * This class contains all the information about a user, artist or host.
+ */
 public final class User {
     private String username;
     private int age;
@@ -56,37 +58,31 @@ public final class User {
     private ArrayList<PageCommand> prevPagesCommand = new ArrayList<>();
     private ArrayList<Item> recommendation = new ArrayList<>();
     private ArrayList<String> recommendationType = new ArrayList<>();
+    private static final int SUBSCRIPTION_COST = 1000000;
 
-    public ArrayList<Item> getLikedSongs() {
-        return likedSongs;
-    }
-
-    public void setLikedSongs(ArrayList<Item> likedSongs) {
-        this.likedSongs = likedSongs;
-    }
 
     public User(final UserInput user) {
         this.username = user.getUsername();
         this.age = user.getAge();
         this.city = user.getCity();
         this.musicPlayer = new MusicPlayer(this);
-        this.status = new String("online");
+        this.status = "online";
         this.type = "user";
         this.page = "Home";
     }
 
-    public User(AddUserCommand command) {
+    public User(final AddUserCommand command) {
         this.username = command.getUsername();
         this.age = command.getAge();
         this.city = command.getCity();
         this.musicPlayer = new MusicPlayer(this);
-        this.status = new String("online");
+        this.status = "online";
         this.type = command.getType();
         this.page = "Home";
     }
 
     /**
-     * for coding style
+     * get the users from the input
      */
     public static ArrayList<User> getUsers(final ArrayList<UserInput> input) {
         ArrayList<User> users = new ArrayList<User>();
@@ -97,7 +93,7 @@ public final class User {
     }
 
     /**
-     * for coding style
+     * clear all data stored in the player
      */
     public void clearPlayer() {
         if (musicPlayer != null) {
@@ -109,7 +105,7 @@ public final class User {
     }
 
     /**
-     * for coding style
+     * save the time of the podcast
      */
     public void saveTime(final int timestamp) {
         if (musicPlayer == null
@@ -127,21 +123,23 @@ public final class User {
         }
     }
 
+    /**
+     * return if the user respects the filters
+     */
     public boolean validate(final Filters filters) {
-        if (filters.getName() != null && !username.startsWith(filters.getName())) {
-            return false;
-        }
-
-        return true;
+        return filters.getName() == null || username.startsWith(filters.getName());
     }
 
+    /**
+     * return if the user respects the filters
+     */
     public boolean isOnline() {
-        if (status.equals("online")) {
-            return true;
-        }
-        return false;
+        return status.equals("online");
     }
 
+    /**
+     * return the number of likes of the artist
+     */
     public int getLikes() {
         int s = 0;
         if (type.equals("artist")) {
@@ -152,13 +150,17 @@ public final class User {
         return s;
     }
 
+    /**
+     * monetize artists for the free songs listened by the user
+     * monetization will remove all songs from the free queue
+     * monetization is called if there is an ad in queue when trying to play a new song
+     */
     public void monetizeUser() {
-        int price = ((Ad)freeSong.remove(freeSong.size() - 1)).getPrice();
+        int price = ((Ad) freeSong.remove(freeSong.size() - 1)).getPrice();
         double revenue = (double) price / freeSong.size();
-//        System.out.println(username + "->" + price);
         for (Song song : freeSong) {
 
-            User artist = Library.getUser(song.getArtist());
+            User artist = Library.getInstance().getUser(song.getArtist());
             if (artist != null) {
                 artist.setSongRevenue(artist.getSongRevenue() + revenue);
             }
@@ -168,17 +170,19 @@ public final class User {
 
     }
 
-    public void updateHistory(Item song) {
-//        if (musicPlayer.getLoadedStatus().getRemainedTime() == song.getDuration()) {
-//            System.out.println("here");
-//        }
+    /**
+     * update the history of the user and call for a monetization if needed
+     * this function is called when a new song is played
+     * monetization is called if there is an ad in queue when trying to play a new song
+     */
+    public void updateHistory(final Item song) {
         if (songHistory.containsKey(song)) {
-            songHistory.put((Song)song, songHistory.get(song) + 1);
+            songHistory.put((Song) song, songHistory.get(song) + 1);
         } else {
-            songHistory.put((Song)song, 1);
+            songHistory.put((Song) song, 1);
         }
 
-        String artist =((Song) song).getArtist();
+        String artist = ((Song) song).getArtist();
         if (artistHistory.containsKey(artist)) {
             artistHistory.put(artist, artistHistory.get(artist) + 1);
         } else {
@@ -192,18 +196,11 @@ public final class User {
                 .findFirst().get();
         album.incListens();
 
-        if (!musicPlayer.getType().equals("albums") && !musicPlayer.getType().equals("songs"))
+        if (!musicPlayer.getType().equals("albums") && !musicPlayer.getType().equals("songs")) {
             musicPlayer.getSrc().incListens();
+        }
         song.incListens();
 
-//        if (!freeSong.isEmpty()) {
-//            for (Song song1 : freeSong) {
-//                System.out.print(song1.getDuration() + " ");
-//            }
-//            System.out.println();
-//        }
-//        if (username.equals("bob35"))
-//            System.out.println(((Song) song).getAlbum() + " " + song.getName());
         if (premium) {
             premiumSong.add((Song) song);
         } else {
@@ -214,7 +211,11 @@ public final class User {
         }
     }
 
-    public void updateHistoryEpisodes(Item episode) {
+    /**
+     * update the history of the user
+     * this function is called when a new episode is played
+     */
+    public void updateHistoryEpisodes(final Item episode) {
         if (episodeHistory.containsKey(episode)) {
             episodeHistory.put((Episode) episode, episodeHistory.get(episode) + 1);
         } else {
@@ -224,19 +225,25 @@ public final class User {
         episode.incListens();
     }
 
-    public void updateHistory(Item song, int listens) {
-        while (listens != 0) {
+    /**
+     * update the history of the user
+     * this function is called when a song has been played multiple times
+     */
+    public void updateHistory(final Item song, final int listens) {
+        for (int i = 0; i < listens; i++) {
             updateHistory(song);
-            listens--;
         }
     }
 
+    /**
+     * cancel the premium subscription and generate revenue for the artists
+     */
     public void cancelPremium() {
         if (premium) {
-            double revenue = (double) 1000000 / premiumSong.size();
+            double revenue = (double) SUBSCRIPTION_COST / premiumSong.size();
             for (Song song : premiumSong) {
 
-                User artist = Library.getUser(song.getArtist());
+                User artist = Library.getInstance().getUser(song.getArtist());
                 if (artist != null) {
                     artist.setSongRevenue(artist.getSongRevenue() + revenue);
                 }
@@ -247,24 +254,38 @@ public final class User {
         }
     }
 
-    public void notifyObservers(String news) {
-        for(Observer observer: subscribers) {
+    /**
+     * add a new notification to the user by notifying all the observers
+     */
+    public void notifyObservers(final String news) {
+        for (Observer observer : subscribers) {
             observer.update(news, this);
         }
     }
 
+    /**
+     * this function acts as the invoker for the page commands
+     * execute the next page command
+     * also acts as a redo function because of the 2 array lists used as stacks
+     */
     public void nextPage() {
-        if (nextPagesCommand.isEmpty())
+        if (nextPagesCommand.isEmpty()) {
             return;
+        }
         PageCommand command = nextPagesCommand.remove(nextPagesCommand.size() - 1);
 
         prevPagesCommand.add(command);
         command.execute();
     }
 
+    /**
+     * this function acts as the invoker for the page commands
+     * undo the last page command
+     */
     public void prevPage() {
-        if (prevPagesCommand.isEmpty())
+        if (prevPagesCommand.isEmpty()) {
             return;
+        }
         PageCommand command = prevPagesCommand.remove(prevPagesCommand.size() - 1);
 
         nextPagesCommand.add(command);

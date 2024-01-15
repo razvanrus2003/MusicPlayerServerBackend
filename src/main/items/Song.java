@@ -17,6 +17,9 @@ import java.util.ArrayList;
 @Getter
 @Setter
 @ToString
+/**
+ * Song class
+ */
 public class Song extends Item {
     private String album;
     private ArrayList<String> tags;
@@ -26,6 +29,7 @@ public class Song extends Item {
     private String artist;
     private int likes = 0;
     private double revenue = 0;
+    private static final int THIRTYONE = 31;
 
     public Song() {
     }
@@ -40,10 +44,14 @@ public class Song extends Item {
         this.releaseYear = song.getReleaseYear();
         this.artist = song.getArtist();
     }
-
+    /**
+     * equals method
+     */
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
+    public final boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
         Song song = (Song) o;
         return song.getName().equalsIgnoreCase(name)
                 && song.getArtist().equals(artist)
@@ -52,11 +60,11 @@ public class Song extends Item {
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         int result = name.hashCode();
-        result = 31 * result + artist.hashCode();
-        result = 31 * result + genre.hashCode();
-        result = 31 * result +  album.hashCode();
+        result = THIRTYONE * result + artist.hashCode();
+        result = THIRTYONE * result + genre.hashCode();
+        result = THIRTYONE * result + album.hashCode();
         return result;
     }
 
@@ -74,9 +82,10 @@ public class Song extends Item {
     }
 
     /**
-     * for coding style
+     * validate song
      */
-    public boolean validate(final Filters filters) {
+    @Override
+    public final boolean validate(final Filters filters) {
         if (filters.getName() != null
                 && !name.toLowerCase().startsWith(filters.getName().toLowerCase())) {
             return false;
@@ -114,16 +123,16 @@ public class Song extends Item {
     }
 
     @Override
-    public ArrayList<Item> getContent() {
+    public final ArrayList<Item> getContent() {
         return null;
     }
 
     @Override
-    public void addToObjectNode(final ObjectNode node, final ObjectMapper objectMapper) {
+    public final void addToObjectNode(final ObjectNode node, final ObjectMapper objectMapper) {
     }
 
     @Override
-    public Item next(final MusicPlayer musicPlayer, final int timestamp) {
+    public final Item next(final MusicPlayer musicPlayer, final int timestamp) {
         Status srcStatus = musicPlayer.getSrcStatus();
         Status loadedStatus = musicPlayer.getLoadedStatus();
         if (srcStatus.getRepeat().equals("No Repeat")) {
@@ -165,11 +174,17 @@ public class Song extends Item {
     }
 
     @Override
-    public boolean canDelete() {
+    public final Item prev(final Status srcStatus, final Status loadedStatus, final int timestamp) {
+        return null;
+    }
+
+    @Override
+    public final boolean canDelete() {
         Library library = Library.getInstance();
 
         for (User user : library.getUsers()) {
-            if (user.getMusicPlayer().getLoaded() != null && user.getMusicPlayer().getLoaded().equals(this)) {
+            if (user.getMusicPlayer().getLoaded() != null
+                    && user.getMusicPlayer().getLoaded().equals(this)) {
                 return false;
             }
             for (Item playlist : user.getPlaylists()) {
@@ -177,7 +192,8 @@ public class Song extends Item {
                     return false;
                 }
             }
-            if (user.getMusicPlayer().getLastResults() != null && user.getMusicPlayer().getLastResults().contains(this)) {
+            if (user.getMusicPlayer().getLastResults() != null
+                    && user.getMusicPlayer().getLastResults().contains(this)) {
                 return false;
             }
         }

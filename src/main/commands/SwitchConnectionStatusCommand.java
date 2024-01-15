@@ -4,13 +4,16 @@ import main.Library;
 import main.User;
 import main.output.CommandOutput;
 
+/**
+ * Command for switching the connection status of a user.
+ */
 public final class SwitchConnectionStatusCommand extends Command {
     @Override
     public CommandOutput execute() {
 
         CommandOutput output = new CommandOutput(this);
 
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
         if (user == null) {
             output.setMessage("The username " + username + " doesn't exist.");
             return output;
@@ -21,7 +24,9 @@ public final class SwitchConnectionStatusCommand extends Command {
             return output;
         }
 
-        if (user.isOnline() && user.getMusicPlayer() != null && user.getMusicPlayer().getLoaded() != null) {
+        if (user.isOnline()
+                && user.getMusicPlayer() != null
+                && user.getMusicPlayer().getLoaded() != null) {
             user.getMusicPlayer().checkStatus(timestamp);
         }
         if (user.isOnline()) {

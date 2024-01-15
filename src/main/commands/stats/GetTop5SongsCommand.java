@@ -16,7 +16,7 @@ public final class GetTop5SongsCommand extends Command {
 
     @Override
     public CommandOutput execute() {
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
         GetTop5SongsOutput output = new GetTop5SongsOutput(this);
 
         ArrayList<Song> top5 = new ArrayList<Song>();

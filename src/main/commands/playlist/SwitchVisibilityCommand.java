@@ -22,7 +22,7 @@ public final class SwitchVisibilityCommand extends Command {
     public CommandOutput execute() {
         CommandOutput output = new CommandOutput(this);
 
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
         ArrayList<Item> playlists = user.getPlaylists();
 
         if (playlistId > playlists.size() || playlistId <= 0) {

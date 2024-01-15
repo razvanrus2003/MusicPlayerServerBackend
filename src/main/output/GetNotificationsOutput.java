@@ -14,8 +14,8 @@ import java.util.ArrayList;
 @Getter
 @Setter
 @ToString
-public class GetNotificationsOutput extends CommandOutput {
-    ArrayList<Notification> notifications = new ArrayList<>();
+public final class GetNotificationsOutput extends CommandOutput {
+    private ArrayList<Notification> notifications = new ArrayList<>();
 
     public GetNotificationsOutput(final Command command) {
         this.command = command.getCommand();
@@ -23,9 +23,7 @@ public class GetNotificationsOutput extends CommandOutput {
         this.timestamp = command.getTimestamp();
     }
 
-    /**
-     * for coding style
-     */
+    @Override
     public void addToObjectNode(final ObjectNode node, final ObjectMapper objectMapper) {
         node.put("command", command);
         node.put("user", user);

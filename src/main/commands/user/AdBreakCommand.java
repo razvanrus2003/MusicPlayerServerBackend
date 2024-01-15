@@ -7,26 +7,31 @@ import main.Library;
 import main.User;
 import main.commands.Command;
 import main.items.Ad;
-import main.items.Collection;
-import main.items.Song;
 import main.output.CommandOutput;
 
 @Getter
 @Setter
 @ToString
-public class AdBreakCommand extends Command {
+
+/**
+ * This class is responsible for the ad break command.
+ */
+public final class AdBreakCommand extends Command {
     private int price;
+
     @Override
     public CommandOutput execute() {
         CommandOutput output = new CommandOutput(this);
 
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
         if (user == null) {
             output.setMessage("The username " + username + " doesn't exist.");
             return output;
         }
 
-        if (user.getMusicPlayer() != null && user.getMusicPlayer().getLoaded() != null && user.isOnline()) {
+        if (user.getMusicPlayer() != null
+                && user.getMusicPlayer().getLoaded() != null
+                && user.isOnline()) {
             user.getMusicPlayer().checkStatus(timestamp);
         }
 

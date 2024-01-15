@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 @Getter
 public final class CreatePlaylistCommand extends Command {
-    protected String playlistName;
+    private String playlistName;
 
     /**
      * for coding style
@@ -25,7 +25,7 @@ public final class CreatePlaylistCommand extends Command {
     public CommandOutput execute() {
         CommandOutput output = new CommandOutput(this);
 
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
         ArrayList<Item> playlists = user.getPlaylists();
 
         for (Item playlist : playlists) {

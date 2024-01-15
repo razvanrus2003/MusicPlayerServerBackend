@@ -9,7 +9,7 @@ import main.output.ShowPodcastsOutput;
 public final class ShowPodcastsCommand extends Command {
     @Override
     public CommandOutput execute() {
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
         ShowPodcastsOutput output = new ShowPodcastsOutput(this);
 
         if (user == null) {

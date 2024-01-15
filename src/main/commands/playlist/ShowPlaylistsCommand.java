@@ -9,7 +9,7 @@ import main.output.ShowPlaylistOutput;
 public final class ShowPlaylistsCommand extends Command {
     @Override
     public CommandOutput execute() {
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
 
         ShowPlaylistOutput output = new ShowPlaylistOutput(this);
         output.setResult(user.getPlaylists());

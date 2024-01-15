@@ -11,7 +11,7 @@ import main.output.CommandOutput;
 public final class DeleteUserCommand extends Command {
     @Override
     public CommandOutput execute() {
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
         CommandOutput output = new CommandOutput(this);
 
         if (user == null) {
@@ -35,8 +35,9 @@ public final class DeleteUserCommand extends Command {
                     user1.getMusicPlayer().checkStatus(timestamp);
                 }
                 if (user1.getMusicPlayer().getLoaded() != null
-                        && !user1.getMusicPlayer().getType().equals("podcasts") &&
-                        ((Song) user1.getMusicPlayer().getLoaded()).getArtist().equals(username)) {
+                        && !user1.getMusicPlayer().getType().equals("podcasts")
+                        && ((Song) user1.getMusicPlayer().getLoaded())
+                        .getArtist().equals(username)) {
                     output.setMessage(username + " can't be deleted.");
                     delete = false;
                     break;

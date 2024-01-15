@@ -5,12 +5,12 @@ import main.User;
 import main.commands.Command;
 import main.output.CommandOutput;
 
-public class NextPageCommand extends Command {
+public final class NextPageCommand extends Command {
     @Override
     public CommandOutput execute() {
         CommandOutput output = new CommandOutput(this);
 
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
         if (user == null) {
             output.setMessage("The username " + username + " doesn't exist.");
             return output;

@@ -12,7 +12,7 @@ public final class PrevCommand extends Command {
     public CommandOutput execute() {
         CommandOutput output = new CommandOutput(this);
 
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
         MusicPlayer musicPlayer = user.getMusicPlayer();
         if (user.getMusicPlayer() == null || user.getMusicPlayer().getSrc() == null) {
             output.setMessage("Please load a source before returning to the previous track.");

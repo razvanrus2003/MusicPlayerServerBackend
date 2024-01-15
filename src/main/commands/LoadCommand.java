@@ -6,20 +6,19 @@ import main.Status;
 import main.User;
 import main.items.Item;
 import main.items.Podcast;
-import main.items.Song;
 import main.output.CommandOutput;
 
 import java.util.ArrayList;
-
 
 public final class LoadCommand extends Command {
     @Override
     public CommandOutput execute() {
         CommandOutput output = new CommandOutput(this);
 
-        User user = Library.getUser(username);
-        if (user == null)
+        User user = Library.getInstance().getUser(username);
+        if (user == null) {
             return null;
+        }
         MusicPlayer musicPlayer = user.getMusicPlayer();
         if (user.getMusicPlayer().getSrc() == null || user.getMusicPlayer().getLoaded() != null) {
             output.setMessage("Please select a source before attempting to load.");
@@ -28,10 +27,10 @@ public final class LoadCommand extends Command {
 
         if (user.getMusicPlayer().getSrc() != null) {
             if (user.getMusicPlayer().getLoadedStatus().getPlayingSince()
-                    + user.getMusicPlayer().getLoadedStatus().getRemainedTime() - timestamp != 0)
+                    + user.getMusicPlayer().getLoadedStatus().getRemainedTime() - timestamp != 0) {
                 user.getMusicPlayer().checkStatus(timestamp);
+            }
         }
-
         Status loadedStatus = musicPlayer.getLoadedStatus();
         Item src = musicPlayer.getSrc();
 
@@ -44,10 +43,10 @@ public final class LoadCommand extends Command {
                 user.getMusicPlayer().getLastResults().clear();
                 return output;
             }
-            if (!user.getFreeSong().isEmpty() && user.getFreeSong().get(user.getFreeSong().size() - 1).getDuration() == 0) {
+            if (!user.getFreeSong().isEmpty()
+                    && user.getFreeSong().get(user.getFreeSong().size() - 1).getDuration() == 0) {
                 user.getFreeSong().remove(user.getFreeSong().size() - 1);
             }
-
             if (user.getMusicPlayer().getType().equals("podcasts")) {
                 if (user.getPlayedPodcasts().containsKey(musicPlayer.getSrc().getName())) {
 
@@ -74,7 +73,7 @@ public final class LoadCommand extends Command {
                 } else {
                     user.updateHistoryEpisodes(list.get(0));
 
-                    String host = ((Podcast)src).getOwner();
+                    String host = ((Podcast) src).getOwner();
                     if (user.getArtistHistory().containsKey(host)) {
                         user.getArtistHistory().put(host, user.getArtistHistory().get(host) + 1);
                     } else {
@@ -83,8 +82,8 @@ public final class LoadCommand extends Command {
                 }
             }
 
-            if (user.getMusicPlayer().getType().equals("playlists") ||
-                    user.getMusicPlayer().getType().equals("albums")) {
+            if (user.getMusicPlayer().getType().equals("playlists")
+                    || user.getMusicPlayer().getType().equals("albums")) {
                 ArrayList<Integer> order = user.getMusicPlayer().getOrder();
                 order.clear();
                 for (int i = 0; i < list.size(); i++) {
@@ -99,7 +98,8 @@ public final class LoadCommand extends Command {
             loadedStatus.setNewItemStatus(user.getMusicPlayer().getSrc(), timestamp);
             user.getMusicPlayer().setLoaded(user.getMusicPlayer().getSrc());
 
-            if (!user.getFreeSong().isEmpty() && user.getFreeSong().get(user.getFreeSong().size() - 1).getDuration() == 0) {
+            if (!user.getFreeSong().isEmpty()
+                    && user.getFreeSong().get(user.getFreeSong().size() - 1).getDuration() == 0) {
                 user.getFreeSong().remove(user.getFreeSong().size() - 1);
             }
 

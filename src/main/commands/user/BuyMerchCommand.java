@@ -8,19 +8,21 @@ import main.User;
 import main.artist.Merch;
 import main.commands.Command;
 import main.output.CommandOutput;
-import main.output.SeeMerchOutput;
-import net.sf.saxon.expr.Component;
 
 import java.util.ArrayList;
 
 @Getter
 @Setter
 @ToString
-public class BuyMerchCommand extends Command {
+/**
+ * Command class that allows a user to buy merch from an artist.
+ */
+public final class BuyMerchCommand extends Command {
     private String name;
+
     @Override
     public CommandOutput execute() {
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
         CommandOutput output = new CommandOutput(this);
 
         if (user == null) {
@@ -39,11 +41,12 @@ public class BuyMerchCommand extends Command {
             return output;
         }
 
-        Merch merch = merches.stream().filter(merch1 -> merch1.getName().equals(name)).findFirst().get();
+        Merch merch = merches.stream().filter(
+                merch1 -> merch1.getName().equals(name)).findFirst().get();
 
         user.getMusicPlayer().getSelected().setMerchRevenue(
                 user.getMusicPlayer().getSelected().getMerchRevenue()
-                + merch.getPrice()
+                        + merch.getPrice()
         );
 
         user.getMerches().add(merch);

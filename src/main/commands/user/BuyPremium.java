@@ -7,19 +7,25 @@ import main.output.CommandOutput;
 
 import java.util.ArrayList;
 
-public class BuyPremium extends Command {
+/**
+ * Command class that is responsible for buying the premium subscription.
+ * It extends the Command class.
+ */
+public final class BuyPremium extends Command {
 
     @Override
     public CommandOutput execute() {
         CommandOutput output = new CommandOutput(this);
 
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
         if (user == null) {
             output.setMessage("The username " + username + " doesn't exist.");
             return output;
         }
 
-        if (user.getMusicPlayer() != null && user.getMusicPlayer().getLoaded() != null && user.isOnline()) {
+        if (user.getMusicPlayer() != null
+                && user.getMusicPlayer().getLoaded() != null
+                && user.isOnline()) {
             user.getMusicPlayer().checkStatus(timestamp);
         }
 

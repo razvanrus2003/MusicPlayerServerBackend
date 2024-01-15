@@ -5,15 +5,18 @@ import main.User;
 import main.artist.Merch;
 import main.commands.Command;
 import main.output.CommandOutput;
-import main.output.SearchOutput;
 import main.output.SeeMerchOutput;
 
 import java.util.ArrayList;
 
-public class SeeMerchCommand extends Command {
+/**
+ * Command class that is responsible for seeing the merch of a user.
+ * It extends the Command class.
+ */
+public final class SeeMerchCommand extends Command {
     @Override
     public CommandOutput execute() {
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
         SeeMerchOutput output = new SeeMerchOutput(this);
 
         if (user == null) {

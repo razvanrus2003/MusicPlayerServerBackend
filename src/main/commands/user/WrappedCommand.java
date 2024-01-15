@@ -4,18 +4,26 @@ import main.Library;
 import main.User;
 import main.commands.Command;
 import main.items.Item;
-import main.items.Song;
 import main.output.CommandOutput;
 import main.output.Formats.WrappedStat;
 import main.output.WrappedOutput;
-
-import java.util.*;
-import java.util.stream.Collector;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class WrappedCommand extends Command {
-
-    private ArrayList<ArrayList<Map.Entry<String, Integer>>> userResult(User user) {
+    private static final int FIVE = 5;
+    /**
+     * Return the top artists, genres, songs, albums and episodes of a user
+     *
+     * @return wrapped results for a user
+     */
+    private ArrayList<ArrayList<Map.Entry<String, Integer>>> userResult(final User user) {
         ArrayList<ArrayList<Map.Entry<String, Integer>>> result = new ArrayList<>();
         result.add(new ArrayList<>());
         result.get(0).add(new AbstractMap.SimpleEntry<>("topArtists", 1));
@@ -25,7 +33,8 @@ public class WrappedCommand extends Command {
         result.get(0).add(new AbstractMap.SimpleEntry<>("topEpisodes", 1));
 
 
-        Comparator<Map.Entry<String, Integer>> comparator = Comparator.comparing(Map.Entry::getValue);
+        Comparator<Map.Entry<String, Integer>> comparator =
+                Comparator.comparing(Map.Entry::getValue);
         comparator = comparator.reversed().thenComparing(Map.Entry.comparingByKey());
 
         ArrayList<Map.Entry<String, Integer>> topArtists = new ArrayList<>(
@@ -38,7 +47,7 @@ public class WrappedCommand extends Command {
                         .stream()
                         .collect(Collectors.toMap(
                                 Map.Entry::getKey,
-                                e-> e.getValue().stream().reduce(0, Integer::sum)))
+                                e -> e.getValue().stream().reduce(0, Integer::sum)))
                         .entrySet()
                         .stream()
                         .sorted(comparator)
@@ -54,7 +63,7 @@ public class WrappedCommand extends Command {
                         .stream()
                         .collect(Collectors.toMap(
                                 Map.Entry::getKey,
-                                e-> e.getValue().stream().reduce(0, Integer::sum)))
+                                e -> e.getValue().stream().reduce(0, Integer::sum)))
                         .entrySet()
                         .stream()
                         .sorted(comparator)
@@ -71,7 +80,7 @@ public class WrappedCommand extends Command {
                         .stream()
                         .collect(Collectors.toMap(
                                 Map.Entry::getKey,
-                                e-> e.getValue().stream().reduce(0, Integer::sum)))
+                                e -> e.getValue().stream().reduce(0, Integer::sum)))
                         .entrySet()
                         .stream()
                         .sorted(comparator)
@@ -87,7 +96,7 @@ public class WrappedCommand extends Command {
                         .stream()
                         .collect(Collectors.toMap(
                                 Map.Entry::getKey,
-                                e-> e.getValue().stream().reduce(0, Integer::sum)))
+                                e -> e.getValue().stream().reduce(0, Integer::sum)))
                         .entrySet()
                         .stream()
                         .filter(entry -> entry.getValue() != 0)
@@ -104,7 +113,7 @@ public class WrappedCommand extends Command {
                         .stream()
                         .collect(Collectors.toMap(
                                 Map.Entry::getKey,
-                                e-> e.getValue().stream().reduce(0, Integer::sum)))
+                                e -> e.getValue().stream().reduce(0, Integer::sum)))
                         .entrySet()
                         .stream()
                         .filter(entry -> entry.getValue() != 0)
@@ -117,37 +126,36 @@ public class WrappedCommand extends Command {
         result.add(topSongs);
         result.add(topAlbums);
         result.add(topEpisodes);
-        if (result.get(1).isEmpty() && result.get(5).isEmpty())
+        if (result.get(1).isEmpty() && result.get(FIVE).isEmpty()) {
             return null;
+        }
         return result;
     }
-    private ArrayList<ArrayList<Map.Entry<String, Integer>>> artistResult(User artist) {
+
+    /**
+     * Returns the top albums and songs of an artist
+     *
+     * @return top albums and songs
+     */
+    private ArrayList<ArrayList<Map.Entry<String, Integer>>> artistResult(final User artist) {
         ArrayList<ArrayList<Map.Entry<String, Integer>>> result = new ArrayList<>();
         result.add(new ArrayList<>());
         result.get(0).add(new AbstractMap.SimpleEntry<>("topAlbums", 1));
         result.get(0).add(new AbstractMap.SimpleEntry<>("topSongs", 1));
 
-        Comparator<Map.Entry<String, Integer>> comparator = Comparator.comparing(Map.Entry::getValue);
+        Comparator<Map.Entry<String, Integer>> comparator =
+                Comparator.comparing(Map.Entry::getValue);
         comparator = comparator.reversed().thenComparing(Map.Entry.comparingByKey());
 
         ArrayList<Map.Entry<String, Integer>> topAlbums = new ArrayList<>(
-//                artist.getPlaylists().stream()
-//                        .collect(Collectors.toMap(
-//                                Item::getName,
-//                                Item::getListens))
-//                        .entrySet()
-//                        .stream()
-//                        .filter(entry -> entry.getValue() != 0)
-//                        .sorted(comparator)
-//                        .toList()
                 Library.getInstance().getUsers().stream()
                         .map(user -> user.getSongHistory().entrySet())
                         .flatMap(Set::stream)
                         .filter(entry -> entry.getKey().getArtist().equals(artist.getUsername()))
                         .collect(Collectors.groupingBy(
-                                entry -> ((Map.Entry<Song, Integer>)entry).getKey().getAlbum(),
+                                entry -> entry.getKey().getAlbum(),
                                 Collectors.mapping(
-                                        entry -> ((Map.Entry<Song, Integer>)entry).getValue(),
+                                        entry -> entry.getValue(),
                                         Collectors.toList()
                                 )
                         ))
@@ -161,29 +169,14 @@ public class WrappedCommand extends Command {
         );
 
         ArrayList<Map.Entry<String, Integer>> topSongs = new ArrayList<>(
-//                artist.getPlaylists().stream()
-//                        .map(Item::getContent)
-//                        .flatMap(List::stream)
-//                        .collect(Collectors.groupingBy(
-//                                Item::getName,
-//                                Collectors.mapping(Item::getListens, Collectors.toList())))
-//                        .entrySet()
-//                        .stream()
-//                        .collect(Collectors.toMap(
-//                                Map.Entry::getKey,
-//                                e-> e.getValue().stream().reduce(0, Integer::sum)))
-//                        .entrySet()
-//                        .stream()
-//                        .sorted(comparator)
-//                        .toList()
                 Library.getInstance().getUsers().stream()
                         .map(user -> user.getSongHistory().entrySet())
                         .flatMap(Set::stream)
                         .filter(entry -> entry.getKey().getArtist().equals(artist.getUsername()))
                         .collect(Collectors.groupingBy(
-                                entry -> ((Map.Entry<Song, Integer>)entry).getKey().getName(),
+                                entry -> entry.getKey().getName(),
                                 Collectors.mapping(
-                                        entry -> ((Map.Entry<Song, Integer>)entry).getValue(),
+                                        entry -> entry.getValue(),
                                         Collectors.toList()
                                 )
                         ))
@@ -201,8 +194,14 @@ public class WrappedCommand extends Command {
         return result;
     }
 
-    private ArrayList<String> getListenres(User artists) {
-        Comparator<Map.Entry<String, Integer>> comparator = Comparator.comparing(Map.Entry::getValue);
+    /**
+     * Returns the top listeners of an artist
+     *
+     * @return top listeners
+     */
+    private ArrayList<String> getListenres(final User artists) {
+        Comparator<Map.Entry<String, Integer>> comparator =
+                Comparator.comparing(Map.Entry::getValue);
         comparator = comparator.reversed().thenComparing(Map.Entry.comparingByKey());
 
         return new ArrayList<>(
@@ -212,7 +211,8 @@ public class WrappedCommand extends Command {
                                 .filter(entry -> entry.getKey().equals(artists.getUsername()))
                                 .map(entry -> new AbstractMap.SimpleEntry<String, Integer>(
                                         user.getUsername(),
-                                        entry.getValue()) {})
+                                        entry.getValue()) {
+                                })
                                 .findFirst()
                                 .orElse(null))
                         .filter(Objects::nonNull)
@@ -221,12 +221,19 @@ public class WrappedCommand extends Command {
                         .toList()
         );
     }
-    private ArrayList<ArrayList<Map.Entry<String, Integer>>> getTopEpisodes(User host) {
+
+    /**
+     * Returns the top episodes of a host
+     *
+     * @return top episodes
+     */
+    private ArrayList<ArrayList<Map.Entry<String, Integer>>> getTopEpisodes(final User host) {
         ArrayList<ArrayList<Map.Entry<String, Integer>>> result = new ArrayList<>();
         result.add(new ArrayList<>());
         result.get(0).add(new AbstractMap.SimpleEntry<>("topEpisodes", 1));
 
-        Comparator<Map.Entry<String, Integer>> comparator = Comparator.comparing(Map.Entry::getValue);
+        Comparator<Map.Entry<String, Integer>> comparator =
+                Comparator.comparing(Map.Entry::getValue);
         comparator = comparator.reversed().thenComparing(Map.Entry.comparingByKey());
 
         ArrayList<Map.Entry<String, Integer>> topEpisodes = new ArrayList<>(
@@ -246,12 +253,17 @@ public class WrappedCommand extends Command {
         return result;
     }
 
+    /**
+     * @return the output of the command
+     */
     @Override
     public CommandOutput execute() {
         WrappedOutput output = new WrappedOutput(this);
 
-        User user = Library.getUser(username);
-        if (user.getMusicPlayer() != null && user.getMusicPlayer().getLoaded() != null && user.isOnline()) {
+        User user = Library.getInstance().getUser(username);
+        if (user.getMusicPlayer() != null
+                && user.getMusicPlayer().getLoaded() != null
+                && user.isOnline()) {
             user.getMusicPlayer().checkStatus(timestamp);
         }
         WrappedStat stats = new WrappedStat();
@@ -260,18 +272,23 @@ public class WrappedCommand extends Command {
             stats.setPairStats(userResult(user));
         } else if (user.getType().equals("artist")) {
             for (User user1 : Library.getInstance().getUsers()) {
-                if (user1.getMusicPlayer() != null && user1.getMusicPlayer().getLoaded() != null && user1.isOnline() && user1 != user) {
+                if (user1.getMusicPlayer() != null
+                        && user1.getMusicPlayer().getLoaded() != null && user1.isOnline()
+                        && user1 != user) {
                     user1.getMusicPlayer().checkStatus(timestamp);
                 }
             }
             stats.setPairStats(artistResult(user));
             stats.setFans(getListenres(user));
             stats.setListeners(stats.getFans().size());
-            if (stats.getPairStats().get(1).isEmpty() && stats.getListeners() == 0)
+            if (stats.getPairStats().get(1).isEmpty() && stats.getListeners() == 0) {
                 stats.setPairStats(null);
-        } else if (user.getType().equals("host")){
+            }
+        } else if (user.getType().equals("host")) {
             for (User user1 : Library.getInstance().getUsers()) {
-                if (user1.getMusicPlayer() != null && user1.getMusicPlayer().getLoaded() != null && user1.isOnline() && user1 != user) {
+                if (user1.getMusicPlayer() != null
+                        && user1.getMusicPlayer().getLoaded() != null
+                        && user1.isOnline() && user1 != user) {
                     user1.getMusicPlayer().checkStatus(timestamp);
                 }
             }

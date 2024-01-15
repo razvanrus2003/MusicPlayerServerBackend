@@ -12,6 +12,9 @@ import main.output.CommandOutput;
 import main.pageControl.ChangePage;
 import main.pageControl.PageCommand;
 
+/**
+ * Concrete command class: ChangePageCommand.
+ */
 @Getter
 @Setter
 @ToString
@@ -20,10 +23,11 @@ public final class ChangePageCommand extends Command {
 
     @Override
     public CommandOutput execute() {
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
         CommandOutput output = new CommandOutput(this);
 
-        if (user.getMusicPlayer() != null && user.getMusicPlayer().getLoaded() != null && user.isOnline()) {
+        if (user.getMusicPlayer() != null
+                && user.getMusicPlayer().getLoaded() != null && user.isOnline()) {
             user.getMusicPlayer().checkStatus(timestamp);
         }
 
@@ -47,20 +51,31 @@ public final class ChangePageCommand extends Command {
 
         }
         if (nextPage.equals("Artist")) {
-            user.getMusicPlayer().setSelected(Library.getUser(((Song)user.getMusicPlayer().getLoaded()).getArtist()));
+            user.getMusicPlayer().setSelected(
+                    Library.getInstance().getUser(
+                            ((Song) user.getMusicPlayer().getLoaded()).getArtist()
+                    ));
 
             output.setMessage(username + " accessed Artist successfully.");
 
-            PageCommand pageCommand = new ChangePage(user, user.getMusicPlayer().getSelected(), nextPage);
+            PageCommand pageCommand = new ChangePage(
+                    user,
+                    user.getMusicPlayer().getSelected(),
+                    nextPage);
             user.getNextPagesCommand().clear();
             user.getNextPagesCommand().add(pageCommand);
             user.nextPage();
 
         }
         if (nextPage.equals("Host")) {
-            user.getMusicPlayer().setSelected(Library.getUser(((Podcast)user.getMusicPlayer().getSrc()).getOwner()));
+            user.getMusicPlayer().setSelected(
+                    Library.getInstance().getUser(
+                            ((Podcast) user.getMusicPlayer().getSrc()).getOwner()));
 
-            PageCommand pageCommand = new ChangePage(user, user.getMusicPlayer().getSelected(), nextPage);
+            PageCommand pageCommand = new ChangePage(
+                    user,
+                    user.getMusicPlayer().getSelected(),
+                    nextPage);
             user.getNextPagesCommand().clear();
             user.getNextPagesCommand().add(pageCommand);
             user.nextPage();

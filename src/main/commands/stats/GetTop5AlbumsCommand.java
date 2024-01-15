@@ -11,12 +11,15 @@ import java.util.ArrayList;
 
 import static java.lang.Math.min;
 
+/**
+ * Command for getting the top 5 albums.
+ */
 public final class GetTop5AlbumsCommand extends Command {
     private static final int FIVE = 5;
 
     @Override
     public CommandOutput execute() {
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
         GetTop5AlbumsOutput output = new GetTop5AlbumsOutput(this);
 
         ArrayList<Album> top5 = new ArrayList<>();
@@ -31,7 +34,8 @@ public final class GetTop5AlbumsCommand extends Command {
                     if (album.getLikes() > top5.get(i).getLikes()) {
                         top5.add(i, album);
                         i = FIVE;
-                    } else if (album.getLikes() == top5.get(i).getLikes() && album.getName().compareTo(top5.get(i).getName()) < 0) {
+                    } else if (album.getLikes() == top5.get(i).getLikes()
+                            && album.getName().compareTo(top5.get(i).getName()) < 0) {
                         top5.add(i, album);
                         i = FIVE;
                     }

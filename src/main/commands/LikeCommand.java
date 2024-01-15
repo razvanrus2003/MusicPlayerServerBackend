@@ -14,7 +14,7 @@ public final class LikeCommand extends Command {
     public CommandOutput execute() {
         CommandOutput output = new CommandOutput(this);
 
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
 
         if (user == null) {
             output.setMessage("The username " + username + " doesn't exist.");

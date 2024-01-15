@@ -6,20 +6,16 @@ import main.Status;
 import main.User;
 import main.commands.Command;
 import main.items.Item;
-import main.items.Podcast;
 import main.output.CommandOutput;
 
 import java.util.ArrayList;
 
-public class LoadRecommendationCommand extends Command {
+public final class LoadRecommendationCommand extends Command {
     @Override
     public CommandOutput execute() {
         CommandOutput output = new CommandOutput(this);
 
-        User user = Library.getUser(username);
-        if (user == null)
-            return null;
-
+        User user = Library.getInstance().getUser(username);
         if (!user.isOnline()) {
             output.setMessage(username + "is offline.");
             return output;
@@ -31,20 +27,14 @@ public class LoadRecommendationCommand extends Command {
             return output;
         }
 
-//        if (user.getMusicPlayer().getSrc() != null) {
-//            if (user.getMusicPlayer().getLoadedStatus().getPlayingSince()
-//                    + user.getMusicPlayer().getLoadedStatus().getRemainedTime() - timestamp != 0)
-//                user.getMusicPlayer().checkStatus(timestamp);
-//        }
-
         Status loadedStatus = musicPlayer.getLoadedStatus();
         Item src = musicPlayer.getSrc();
 
         musicPlayer.getSrcStatus().setNewItemStatus(
-                user.getRecommendation().get(user.getRecommendation().size() - 1)
-                , timestamp);
+                user.getRecommendation().get(user.getRecommendation().size() - 1),
+                timestamp);
 
-        Item newSrc = user.getRecommendation().get(user.getRecommendation().size() - 1);;
+        Item newSrc = user.getRecommendation().get(user.getRecommendation().size() - 1);
         String type = user.getRecommendationType().get(user.getRecommendationType().size() - 1);
 
         user.getMusicPlayer().setSrc(newSrc);
@@ -55,12 +45,13 @@ public class LoadRecommendationCommand extends Command {
                 user.getMusicPlayer().getLastResults().clear();
                 return output;
             }
-            if (!user.getFreeSong().isEmpty() && user.getFreeSong().get(user.getFreeSong().size() - 1).getDuration() == 0) {
+            if (!user.getFreeSong().isEmpty()
+                    && user.getFreeSong().get(user.getFreeSong().size() - 1).getDuration() == 0) {
                 user.getFreeSong().remove(user.getFreeSong().size() - 1);
             }
 
-            if (user.getMusicPlayer().getType().equals("playlists") ||
-                    user.getMusicPlayer().getType().equals("albums")) {
+            if (user.getMusicPlayer().getType().equals("playlists")
+                    || user.getMusicPlayer().getType().equals("albums")) {
                 ArrayList<Integer> order = user.getMusicPlayer().getOrder();
                 order.clear();
                 for (int i = 0; i < list.size(); i++) {
@@ -75,7 +66,8 @@ public class LoadRecommendationCommand extends Command {
             loadedStatus.setNewItemStatus(user.getMusicPlayer().getSrc(), timestamp);
             user.getMusicPlayer().setLoaded(user.getMusicPlayer().getSrc());
 
-            if (!user.getFreeSong().isEmpty() && user.getFreeSong().get(user.getFreeSong().size() - 1).getDuration() == 0) {
+            if (!user.getFreeSong().isEmpty()
+                    && user.getFreeSong().get(user.getFreeSong().size() - 1).getDuration() == 0) {
                 user.getFreeSong().remove(user.getFreeSong().size() - 1);
             }
 

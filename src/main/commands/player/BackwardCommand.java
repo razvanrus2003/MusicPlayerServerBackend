@@ -14,7 +14,7 @@ public final class BackwardCommand extends Command {
     public CommandOutput execute() {
         CommandOutput output = new CommandOutput(this);
 
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
         MusicPlayer musicPlayer = user.getMusicPlayer();
         if (user.getMusicPlayer().getSrc() == null) {
             output.setMessage("Please select a source before rewinding.");

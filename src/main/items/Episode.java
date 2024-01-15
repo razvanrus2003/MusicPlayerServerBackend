@@ -6,6 +6,8 @@ import fileio.input.EpisodeInput;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import main.MusicPlayer;
+import main.Status;
 import main.filters.Filters;
 
 import java.util.ArrayList;
@@ -50,6 +52,16 @@ public final class Episode extends Item {
 
     @Override
     public void addToObjectNode(final ObjectNode node, final ObjectMapper objectMapper) {
+    }
+
+    @Override
+    public Item next(final MusicPlayer musicPlayer, final int timestamp) {
+        return null;
+    }
+
+    @Override
+    public Item prev(final Status srcStatus, final Status loadedStatus, final int timestamp) {
+        return null;
     }
 
     @Override

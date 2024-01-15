@@ -12,7 +12,6 @@ import main.Status;
 import main.User;
 import main.commands.playlist.CreatePlaylistCommand;
 
-import javax.swing.plaf.multi.MultiSeparatorUI;
 import java.util.ArrayList;
 
 @Getter
@@ -65,9 +64,6 @@ public final class Playlist extends Collection {
         return -1;
     }
 
-    /**
-     * for coding style
-     */
     @Override
     public Item next(final MusicPlayer musicPlayer, final int timestamp) {
         Status srcStatus = musicPlayer.getSrcStatus();
@@ -77,12 +73,14 @@ public final class Playlist extends Collection {
             if (srcStatus.checkPlayStatus(timestamp)) {
                 int pos = loadedStatus.getPosition();
                 Item curr = songs.get(pos);
-                while (loadedStatus.getRemainedTime() + loadedStatus.getPlayingSince() <= timestamp) {
+                while (loadedStatus.getRemainedTime()
+                        + loadedStatus.getPlayingSince() <= timestamp) {
                     pos = getNextSong(pos, srcStatus.getOrder());
                     if (pos == srcStatus.getOrder().size()) {
                         User user = musicPlayer.getUser();
                         if (!user.getFreeSong().isEmpty()
-                                && user.getFreeSong().get(user.getFreeSong().size() - 1).getDuration() == 0) {
+                                && user.getFreeSong().get(
+                                        user.getFreeSong().size() - 1).getDuration() == 0) {
                             musicPlayer.getUser().monetizeUser();
                         }
                         loadedStatus.clearStatus();
@@ -111,7 +109,8 @@ public final class Playlist extends Collection {
                 if (pos == srcStatus.getOrder().size()) {
                     User user = musicPlayer.getUser();
                     if (!user.getFreeSong().isEmpty()
-                            && user.getFreeSong().get(user.getFreeSong().size() - 1).getDuration() == 0) {
+                            && user.getFreeSong().get(
+                                    user.getFreeSong().size() - 1).getDuration() == 0) {
                         musicPlayer.getUser().monetizeUser();
                     }
                     loadedStatus.clearStatus();
@@ -140,7 +139,8 @@ public final class Playlist extends Collection {
             int pos = loadedStatus.getPosition();
             Item curr = songs.get(pos);
 
-            while (loadedStatus.getRemainedTime() + loadedStatus.getPlayingSince() <= timestamp) {
+            while (loadedStatus.getRemainedTime()
+                    + loadedStatus.getPlayingSince() <= timestamp) {
                 pos = getNextSong(pos, srcStatus.getOrder());
                 if (pos == srcStatus.getOrder().size()) {
                     pos = srcStatus.getOrder().get(0);
@@ -164,7 +164,8 @@ public final class Playlist extends Collection {
         int pos = loadedStatus.getPosition();
         Item curr = songs.get(pos);
 
-        while (loadedStatus.getRemainedTime() + loadedStatus.getPlayingSince() <= timestamp) {
+        while (loadedStatus.getRemainedTime()
+                + loadedStatus.getPlayingSince() <= timestamp) {
             loadedStatus.setName(curr.getName());
             loadedStatus.setPlayingSince(loadedStatus.getPlayingSince()
                     + loadedStatus.getRemainedTime());
@@ -178,13 +179,6 @@ public final class Playlist extends Collection {
         loadedStatus.setPosition(pos);
         return curr;
     }
-
-    /**
-     * @param srcStatus
-     * @param loadedStatus
-     * @param timestamp
-     * @return
-     */
     @Override
     public Item prev(final Status srcStatus, final Status loadedStatus, final int timestamp) {
         if (loadedStatus.getPosition() == srcStatus.getOrder().get(0)) {
@@ -218,7 +212,7 @@ public final class Playlist extends Collection {
     }
 
     /**
-     * for coding style
+     * update time
      */
     public void updateTime(final Status srcStatus, final Status loadedStatus) {
         int i = 0;
@@ -241,7 +235,8 @@ public final class Playlist extends Collection {
         Library library = Library.getInstance();
 
         for (User user : library.getUsers()) {
-            if (user.getMusicPlayer().getLastResults() != null && user.getMusicPlayer().getLastResults().contains(this)) {
+            if (user.getMusicPlayer().getLastResults() != null
+                    && user.getMusicPlayer().getLastResults().contains(this)) {
 
                 return false;
             }

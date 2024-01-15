@@ -10,7 +10,7 @@ public final class ShowAlbumsCommand extends Command {
     @Override
     public CommandOutput execute() {
 
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
         ShowAlbumsOutput output = new ShowAlbumsOutput(this);
 
         if (user == null) {

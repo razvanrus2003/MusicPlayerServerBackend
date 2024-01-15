@@ -13,7 +13,7 @@ import java.util.ArrayList;
 @Getter
 @Setter
 @ToString
-public class SeeMerchOutput extends CommandOutput {
+public final class SeeMerchOutput extends CommandOutput {
     private ArrayList<String> results;
 
     public SeeMerchOutput(final Command command) {

@@ -24,7 +24,7 @@ public final class AddEventCommand extends Command {
 
     @Override
     public CommandOutput execute() {
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
         CommandOutput output = new CommandOutput(this);
 
         if (user == null) {

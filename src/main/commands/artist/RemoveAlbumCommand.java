@@ -17,10 +17,10 @@ public final class RemoveAlbumCommand extends Command {
 
     @Override
     public CommandOutput execute() {
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
         CommandOutput output = new CommandOutput(this);
 
-        for (User user1: Library.getInstance().getUsers()) {
+        for (User user1 : Library.getInstance().getUsers()) {
             if (user1.getMusicPlayer().getLoaded() != null) {
                 user1.getMusicPlayer().checkStatus(timestamp);
             }

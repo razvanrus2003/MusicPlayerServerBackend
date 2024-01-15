@@ -3,18 +3,20 @@ package main.commands.notifications;
 import main.Library;
 import main.User;
 import main.commands.Command;
-import main.items.Collection;
 import main.output.CommandOutput;
 import main.output.GetNotificationsOutput;
 
 import java.util.ArrayList;
 
-public class GetNotificationsCommand extends Command {
+public final class GetNotificationsCommand extends Command {
+    /**
+     * Returns the notifications of the user with the given username.
+     */
     @Override
     public CommandOutput execute() {
         GetNotificationsOutput output = new GetNotificationsOutput(this);
 
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
         if (user == null) {
             output.setMessage("The username " + username + " doesn't exist.");
             return output;

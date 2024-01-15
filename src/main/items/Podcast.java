@@ -30,7 +30,7 @@ public final class Podcast extends Collection {
         }
     }
 
-    public Podcast(AddPodcastCommand command) {
+    public Podcast(final AddPodcastCommand command) {
         this.name = command.getName();
         this.owner = command.getUsername();
         this.episodes = new ArrayList<>();
@@ -59,7 +59,7 @@ public final class Podcast extends Collection {
     }
 
     @Override
-    public void addToObjectNode(ObjectNode node, ObjectMapper objectMapper) {
+    public void addToObjectNode(final ObjectNode node, final ObjectMapper objectMapper) {
         node.put("name", name);
         ArrayNode subnode = objectMapper.createArrayNode();
         for (Item epidode : episodes) {
@@ -69,9 +69,6 @@ public final class Podcast extends Collection {
 
     }
 
-    /**
-     * for coding style
-     */
     @Override
     public Item next(final MusicPlayer musicPlayer, final int timestamp) {
         Status srcStatus = musicPlayer.getSrcStatus();
@@ -80,7 +77,7 @@ public final class Podcast extends Collection {
         if (srcStatus.getRepeat().equals("No Repeat")) {
             if (srcStatus.checkPlayStatus(timestamp)) {
                 int pos = loadedStatus.getPosition();
-                for (; pos < episodes.size(); pos ++) {
+                for (; pos < episodes.size(); pos++) {
                     musicPlayer.getUser().updateHistoryEpisodes(episodes.get(pos));
                 }
 
@@ -113,7 +110,7 @@ public final class Podcast extends Collection {
                 srcStatus.setRepeat("No repeat");
 
                 int pos = loadedStatus.getPosition();
-                for (; pos < episodes.size(); pos ++) {
+                for (; pos < episodes.size(); pos++) {
                     musicPlayer.getUser().updateHistoryEpisodes(episodes.get(pos));
                 }
 

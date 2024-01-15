@@ -9,6 +9,7 @@ import main.commands.Command;
 import main.items.Item;
 import main.items.Playlist;
 import main.output.CommandOutput;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -25,7 +26,7 @@ public final class ShuffleCommand extends Command {
     public CommandOutput execute() {
         CommandOutput output = new CommandOutput(this);
 
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
         MusicPlayer musicPlayer = user.getMusicPlayer();
         user.getMusicPlayer().checkStatus(timestamp);
         if (musicPlayer == null || user.getMusicPlayer().getLoadedStatus().getName().isEmpty()) {

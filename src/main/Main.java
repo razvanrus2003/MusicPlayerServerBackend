@@ -90,7 +90,6 @@ public final class Main {
                 });
         int lastTimestamp = 0;
         for (Command command : commandArray) {
-//            System.out.println(command.getUsername() + "=>" + command.getCommand() + "  " + command.getTimestamp());
             CommandOutput output = command.execute();
             ObjectNode node = objectMapper.createObjectNode();
             if (output != null) {

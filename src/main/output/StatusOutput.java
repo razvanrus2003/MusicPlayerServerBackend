@@ -29,8 +29,9 @@ public final class StatusOutput extends CommandOutput {
         node.put("user", user);
         node.put("timestamp", timestamp);
 
-        User user1 = Library.getUser(user);
-        if (user1.getMusicPlayer() != null && user1.getMusicPlayer().getType().equals("playlists")) {
+        User user1 = Library.getInstance().getUser(user);
+        if (user1.getMusicPlayer() != null
+                && user1.getMusicPlayer().getType().equals("playlists")) {
             if (status.getRepeat().equals("Repeat Once")) {
                 status.setRepeat("Repeat All");
             }
@@ -44,7 +45,8 @@ public final class StatusOutput extends CommandOutput {
         }
 
         node.set("stats", subnode);
-        if (user1.getMusicPlayer() != null && user1.getMusicPlayer().getType().equals("playlists")) {
+        if (user1.getMusicPlayer() != null
+                && user1.getMusicPlayer().getType().equals("playlists")) {
             if (status.getRepeat().equals("Repeat All")) {
                 status.setRepeat("Repeat Once");
             }

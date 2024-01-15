@@ -17,8 +17,10 @@ import static java.lang.Math.min;
 @Getter
 @Setter
 @ToString
-public class WrappedOutput extends CommandOutput {
+public final class WrappedOutput extends CommandOutput {
     private WrappedStat results;
+    private static final int FIVE = 5;
+
 
     public WrappedOutput(final Command command) {
         this.command = command.getCommand();
@@ -37,13 +39,15 @@ public class WrappedOutput extends CommandOutput {
         ObjectNode fresults = objectMapper.createObjectNode();
 
         if (results.getPairStats() == null) {
-            node.put("message", "No data to show for " + Library.getUser(user).getType().toLowerCase() + " " + user + ".");
+            node.put("message", "No data to show for "
+                    + Library.getInstance().getUser(user).getType().toLowerCase()
+                    + " " + user + ".");
             return;
         }
 
-        for (int j = 1; j < results.getPairStats().size(); j ++) {
+        for (int j = 1; j < results.getPairStats().size(); j++) {
             ObjectNode element = objectMapper.createObjectNode();
-            for (int i = 0; i < min(results.getPairStats().get(j).size(), 5); i++) {
+            for (int i = 0; i < min(results.getPairStats().get(j).size(), FIVE); i++) {
                 element.put(results.getPairStats().get(j).get(i).getKey(),
                         results.getPairStats().get(j).get(i).getValue());
             }
@@ -55,7 +59,7 @@ public class WrappedOutput extends CommandOutput {
             for (String fan : results.getFans()) {
                 fans.add(fan);
                 i++;
-                if (i == 5) {
+                if (i == FIVE) {
                     break;
                 }
             }

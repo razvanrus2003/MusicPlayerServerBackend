@@ -7,16 +7,20 @@ import main.Library;
 import main.User;
 import main.items.Item;
 import main.items.Playlist;
-import main.items.Song;
 import main.output.CommandOutput;
 import main.pageControl.ChangePage;
 import main.pageControl.PageCommand;
 
+
 @Getter
 @Setter
 @ToString
+/**
+ * SelectCommand is a command that selects an item from the last search results
+ * or from the last search results of a user.
+ */
 public final class SelectCommand extends Command {
-    protected int itemNumber;
+    private int itemNumber;
 
     public SelectCommand() {
     }
@@ -25,7 +29,7 @@ public final class SelectCommand extends Command {
     public CommandOutput execute() {
         CommandOutput output = new CommandOutput(this);
 
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
         if (user == null) {
             output.setMessage("The username " + username + " doesn't exist.");
             return output;
@@ -48,17 +52,19 @@ public final class SelectCommand extends Command {
                 output.setMessage("The selected ID is too high.");
                 return output;
             }
-            user.getMusicPlayer().setSelected(user.getMusicPlayer().getLastResultsUsers().get(itemNumber - 1));
+            user.getMusicPlayer().setSelected(
+                    user.getMusicPlayer().getLastResultsUsers().get(itemNumber - 1));
             user.getMusicPlayer().setLastResultsUsers(null);
 
             String pageType;
             if (user.getMusicPlayer().getSelected().getType().equals("artist")) {
-                pageType ="Artist";
+                pageType = "Artist";
             } else {
                 pageType = "Host";
             }
 
-            PageCommand pageCommand = new ChangePage(user, user.getMusicPlayer().getSelected(), pageType);
+            PageCommand pageCommand = new ChangePage(
+                    user, user.getMusicPlayer().getSelected(), pageType);
             user.getNextPagesCommand().clear();
             user.getNextPagesCommand().add(pageCommand);
             user.nextPage();
@@ -96,7 +102,8 @@ public final class SelectCommand extends Command {
                     timestamp);
         } else {
 
-            user.getMusicPlayer().setSrc(user.getMusicPlayer().getLastResults().get(itemNumber - 1));
+            user.getMusicPlayer().setSrc(
+                    user.getMusicPlayer().getLastResults().get(itemNumber - 1));
             user.getMusicPlayer().getSrcStatus().setNewItemStatus(
                     user.getMusicPlayer().getSrc(),
                     timestamp);
@@ -104,7 +111,8 @@ public final class SelectCommand extends Command {
 
 
         output.setMessage("Successfully selected "
-                + user.getMusicPlayer().getLastResults().get(itemNumber - 1).getName()
+                + user.getMusicPlayer().
+                getLastResults().get(itemNumber - 1).getName()
                 + ".");
         user.getMusicPlayer().getLastResults().clear();
         return output;

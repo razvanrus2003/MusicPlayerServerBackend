@@ -5,9 +5,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import main.Library;
 import main.MusicPlayer;
+import main.Status;
 import main.User;
 import main.commands.artist.AddAlbumCommand;
 
@@ -27,9 +27,9 @@ public final class Album extends Collection {
         this.releaseYear = command.getReleaseYear();
         this.owner = command.getUsername();
         this.duration = 0;
-        ArrayList<Song> songs = command.getSongs();
+        ArrayList<Song> newSongs = command.getSongs();
         this.songs = new ArrayList<>();
-        for (Song song : songs) {
+        for (Song song : newSongs) {
             this.duration += song.getDuration();
             this.songs.add(song);
         }
@@ -41,7 +41,7 @@ public final class Album extends Collection {
     }
 
     @Override
-    public void addToObjectNode(ObjectNode node, ObjectMapper objectMapper) {
+    public void addToObjectNode(final ObjectNode node, final ObjectMapper objectMapper) {
         node.put("name", name);
         ArrayNode subnode = objectMapper.createArrayNode();
         for (Item song : songs) {
@@ -50,6 +50,9 @@ public final class Album extends Collection {
         node.set("songs", subnode);
     }
 
+    /**
+     * @return the number of times the album was played
+     */
     @Override
     public boolean canDelete() {
         Library library = Library.getInstance();
@@ -69,6 +72,9 @@ public final class Album extends Collection {
         return true;
     }
 
+    /**
+     * @return the number of likes of the album
+     */
     public int getLikes() {
         int s = 0;
         for (Item song : songs) {
@@ -78,7 +84,12 @@ public final class Album extends Collection {
     }
 
     @Override
-    public Item next(MusicPlayer musicPlayer, int timestamp) {
+    public Item next(final MusicPlayer musicPlayer, final int timestamp) {
+        return null;
+    }
+
+    @Override
+    public Item prev(final Status srcStatus, final Status loadedStatus, final int timestamp) {
         return null;
     }
 }

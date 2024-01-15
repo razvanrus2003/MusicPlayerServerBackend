@@ -14,7 +14,7 @@ public final class FollowPlaylistCommand extends Command {
     public CommandOutput execute() {
         CommandOutput output = new CommandOutput(this);
 
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
 
         if (user.getPlaylists() == null || user.getMusicPlayer().getSrcStatus() == null) {
             output.setMessage("Please select a source before following or unfollowing.");

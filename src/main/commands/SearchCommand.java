@@ -5,7 +5,10 @@ import lombok.Setter;
 import main.Library;
 import main.User;
 import main.filters.Filters;
-import main.items.*;
+import main.items.Item;
+import main.items.Playlist;
+import main.items.Podcast;
+import main.items.Song;
 import main.output.CommandOutput;
 import main.output.SearchOutput;
 
@@ -24,7 +27,7 @@ public final class SearchCommand extends Command {
 
     @Override
     public CommandOutput execute() {
-        User user = Library.getUser(username);
+        User user = Library.getInstance().getUser(username);
         SearchOutput output = new SearchOutput(this);
 
         if (user == null) {
@@ -45,8 +48,9 @@ public final class SearchCommand extends Command {
 
         if (user.getMusicPlayer().getSrc() != null) {
             if (user.getMusicPlayer().getLoadedStatus().getPlayingSince()
-                    + user.getMusicPlayer().getLoadedStatus().getRemainedTime() - timestamp != 0)
+                    + user.getMusicPlayer().getLoadedStatus().getRemainedTime() - timestamp != 0) {
                 user.getMusicPlayer().checkStatus(timestamp);
+            }
         }
         user.saveTime(timestamp);
         user.clearPlayer();
