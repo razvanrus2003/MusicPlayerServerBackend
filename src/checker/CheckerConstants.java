@@ -17,7 +17,7 @@ public final class CheckerConstants {
     public static final String OUT_PATH = "result/out_";
     public static final String REF_PATH = "ref/ref_";
     public static final String RESULT_PATH = "result";
-    public static final String OUT_FILE = "out.json";
+    public static final String OUT_FILE = "out.txt";
     public static final String ERROR_TEST = "error";
     public static final String COMPLEX_TEST = "complex";
     public static final Integer SIMPLE_TEST_POINTS = 4;
